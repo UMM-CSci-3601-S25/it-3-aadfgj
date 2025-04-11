@@ -50,14 +50,6 @@ export class GameComponent {
     ));
   error = signal({help: '', httpResponse: '', message: ''});
 
-  submitPrompt() {
-    const gameId = this.game()?._id;
-    this.httpClient.put<Game>(`/api/game/edit/${gameId}`, {$set:{prompt: this.submission}}).subscribe();
-    //console.log(this.submission);
-    //this.isPromptSubmitted = true; // Mark the prompt as submitted
-    this.displayedPrompt = this.submission; // Store the submitted prompt
-    this.submission = ''; // Clear the input field
-  }
 
   submitResponse() {
     const gameId = this.game()?._id;

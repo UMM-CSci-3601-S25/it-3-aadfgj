@@ -10,6 +10,8 @@ import { By } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
+import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 describe('HomeComponent', () => {
   beforeEach(waitForAsync(() => {
@@ -49,5 +51,34 @@ describe('HomeComponent', () => {
     fixture.detectChanges();
     const joinButton = fixture.debugElement.query(By.css('button#join-game'));
     expect(joinButton).toBeTruthy();
+  });
+
+  it('should call createGame and navigate to the settings page with the new game ID', () => {
+    const fixture = TestBed.createComponent(HomeComponent);
+    const component = fixture.componentInstance;
+    const httpClient = TestBed.inject(HttpClient);
+    const router = TestBed.inject(Router);
+
+    spyOn(httpClient, 'post').and.returnValue({
+      pipe: () => ({
+        subscribe: (callbacks: { next: (newId: string) => void }) => {
+          callbacks.next('12345'); // Simulate API response with a new game ID
+        },
+      }),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any);
+    spyOn(router, 'navigateByUrl');
+
+    component.createGame();
+
+    expect(httpClient.post).toHaveBeenCalledWith('/api/game/new', jasmine.objectContaining({
+      players: [],
+      judge: 0,
+      winnerBecomesJudge: false,
+      responses: [],
+      scores: [],
+      pastResponses: []
+    }));
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/settings/12345');
   });
 });
