@@ -34,11 +34,6 @@ public class GameSpec {
     assertArrayEquals(new String[]{"Alice", "Bob"}, game.players);
   }
 
-  // @Test
-  // public void testGamePrompt() {
-  //   assertEquals("What is the meaning of life?", game.prompt);
-  // }
-
   @Test
   public void testGameResponses() {
     assertArrayEquals(new String[]{"42", "To be happy"}, game.responses);

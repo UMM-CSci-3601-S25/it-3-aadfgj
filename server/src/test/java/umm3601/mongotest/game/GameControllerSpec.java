@@ -1,11 +1,7 @@
 package umm3601.mongotest.game;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-// import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-// import static org.mockito.Mockito.mock;
-// import static org.junit.jupiter.api.Assertions.assertThrows;
-// import static org.mockito.ArgumentMatchers.any;
-// import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -35,53 +31,42 @@ import com.mongodb.client.MongoDatabase;
 
 import io.javalin.Javalin;
 import io.javalin.http.BadRequestResponse;
-// import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import io.javalin.http.NotFoundResponse;
-// import io.javalin.validation.BodyValidator;
-// import io.javalin.validation.BodyValidator;
 import umm3601.game.Game;
 import umm3601.game.GameController;
-// import io.javalin.validation.ValidationException;
-// import io.javalin.json.JavalinJackson;
 
 class GameControllerSpec {
 
   private ObjectId gameID;
 
+  private GameController gameController;
 
+  @Mock
+  private Javalin mockServer;
 
-    private GameController gameController;
+  private static MongoClient mongoClient;
+  private static MongoDatabase db;
 
-    @Mock
-    private Javalin mockServer;
+  @Mock
+  private Context ctx;
 
-    private static MongoClient mongoClient;
-    private static MongoDatabase db;
+  @Captor
+  private ArgumentCaptor<Map<String, String>> mapCaptor;
 
-    // private static JavalinJackson javalinJackson = new JavalinJackson();
+  @Captor
+  private ArgumentCaptor<Game> gameCaptor;
 
-    @Mock
-    private Context ctx;
+  @BeforeAll
+  static void setupAll() {
+    String mongoAddr = System.getenv().getOrDefault("MONGO_ADDR", "localhost");
 
-    @Captor
-    private ArgumentCaptor<Map<String, String>> mapCaptor;
-
-    @Captor
-    private ArgumentCaptor<Game> gameCaptor;
-
-    @BeforeAll
-    static void setupAll() {
-      String mongoAddr = System.getenv().getOrDefault("MONGO_ADDR", "localhost");
-
-      mongoClient = MongoClients.create(
-          MongoClientSettings.builder()
-              .applyToClusterSettings(builder -> builder.hosts(Collections.singletonList(new ServerAddress(mongoAddr))))
-              .build());
-      db = mongoClient.getDatabase("test");
-
-
+    mongoClient = MongoClients.create(
+        MongoClientSettings.builder()
+            .applyToClusterSettings(builder -> builder.hosts(Collections.singletonList(new ServerAddress(mongoAddr))))
+            .build());
+    db = mongoClient.getDatabase("test");
   }
 
   @AfterAll
@@ -101,7 +86,6 @@ class GameControllerSpec {
 
     gameID = new ObjectId();
 
-
     BsonArray usernames = new BsonArray();
     usernames.add(new BsonString("Kristin"));
     usernames.add(new BsonString("Jeff"));
@@ -120,14 +104,8 @@ class GameControllerSpec {
       .append("winnerBecomesJudge", false)
       .append("_id", gameID);
 
-
-    // test_id = new ObjectId("67c74ff45818e91bd07be91b");
-
     gameDocuments.insertOne(newGame);
-
   }
-
-
 
   @Test
   void getGameWithExistentId() throws IOException {
@@ -141,7 +119,6 @@ class GameControllerSpec {
     verify(ctx).status(HttpStatus.OK);
     assertEquals(gameID.toHexString(), gameCaptor.getValue()._id);
   }
-
 
   @Test
   void getGameWithNonexistentId() throws IOException {
@@ -164,30 +141,43 @@ class GameControllerSpec {
     });
   }
 
+  @Test
+  void addRoutesRegistersAllEndpoints() {
+    // Add routes to the mock server
+    gameController.addRoutes(mockServer);
 
+    // Capture the arguments passed to the mockServer
+    ArgumentCaptor<String> pathCaptor = ArgumentCaptor.forClass(String.class);
+    ArgumentCaptor<io.javalin.http.Handler> handlerCaptor = ArgumentCaptor.forClass(io.javalin.http.Handler.class);
 
-  // @Test
-  // void addRoutesRegistersAllEndpoints() {
-  //   gameController.addRoutes(mockServer);
+    // Verify the GET route
+    verify(mockServer).get(pathCaptor.capture(), handlerCaptor.capture());
+    assertEquals("/api/game/{id}", pathCaptor.getValue());
+    assertNotNull(handlerCaptor.getValue());
 
-  //   verify(mockServer).get("/api/game/{id}", gameController::getGame);
-  //   verify(mockServer).post("/api/game/new", gameController::addNewGame);
-  //   verify(mockServer).put("/api/game/edit/{id}", gameController::editGame);
-  //   verify(mockServer).post("/api/game/new", gameController::addNewGame);
-  //   verify(mockServer).put("/api/game/edit/{id}", gameController::editGame);
-  // }
+    // Verify the POST route for adding a new game
+    verify(mockServer).post(pathCaptor.capture(), handlerCaptor.capture());
+    assertEquals("/api/game/new", pathCaptor.getValue());
+    assertNotNull(handlerCaptor.getValue());
 
+    // Verify the PUT route for editing a game
+    verify(mockServer).put(pathCaptor.capture(), handlerCaptor.capture());
+    assertEquals("/api/game/edit/{id}", pathCaptor.getValue());
+    assertNotNull(handlerCaptor.getValue());
+  }
 
+  @Test
+  void returnNumGames() throws IOException {
+    // Call the numGames method
+    gameController.numGames(ctx);
 
+    // Capture the JSON response sent to the ctx
+    verify(ctx).json(mapCaptor.capture());
 
-
-  // @Test
-  // void returnNumGames() throws IOException {
-  //   gameController.numGames(ctx);
-  //   verify(ctx).json(mapCaptor.capture());
-  //   assertEquals(1, mapCaptor.getValue().size());
-  // }
-
+    // Verify the captured response contains the correct number of games
+    Map<String, String> capturedResponse = mapCaptor.getValue();
+    assertEquals("1", capturedResponse.get("count")); // Expecting 1 game in the database
+  }
 
   @Test
   void editGameWithExistentId() throws IOException {
@@ -205,7 +195,6 @@ class GameControllerSpec {
     verify(ctx).body();
   }
 
-
   @Test
   void editGameWithNonexistentId() throws IOException {
     String id = new ObjectId().toHexString();
@@ -220,5 +209,4 @@ class GameControllerSpec {
       gameController.editGame(ctx);
     });
   }
-
- }
+}

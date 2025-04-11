@@ -1,5 +1,6 @@
 package umm3601.game;
 
+import java.util.Collections;
 import java.util.Map;
 
 import org.bson.Document;
@@ -67,6 +68,11 @@ public class GameController implements Controller {
     ctx.json(Map.of("id", newGame._id));
     ctx.status(HttpStatus.CREATED);
   }
+
+  public void numGames(Context ctx) {
+    long count = gameCollection.getMongoCollection().countDocuments();
+    ctx.json(Collections.singletonMap("count", String.valueOf(count)));
+}
 
   public void editGame(Context ctx) {
     // Game newGame = ctx.bodyValidator(Game.class).get();
