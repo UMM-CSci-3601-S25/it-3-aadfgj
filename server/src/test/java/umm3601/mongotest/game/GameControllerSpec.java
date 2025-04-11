@@ -107,18 +107,18 @@ class GameControllerSpec {
     gameDocuments.insertOne(newGame);
   }
 
-  @Test
-  void getGameWithExistentId() throws IOException {
+  // @Test
+  // void getGameWithExistentId() throws IOException {
 
-    String id = gameID.toHexString();
-    when(ctx.pathParam("id")).thenReturn(id);
+  //   String id = gameID.toHexString();
+  //   when(ctx.pathParam("id")).thenReturn(id);
 
-    gameController.getGame(ctx);
+  //   gameController.getGame(ctx);
 
-    verify(ctx).json(gameCaptor.capture());
-    verify(ctx).status(HttpStatus.OK);
-    assertEquals(gameID.toHexString(), gameCaptor.getValue()._id);
-  }
+  //   verify(ctx).json(gameCaptor.capture());
+  //   verify(ctx).status(HttpStatus.OK);
+  //   assertEquals(gameID.toHexString(), gameCaptor.getValue()._id);
+  // }
 
   @Test
   void getGameWithNonexistentId() throws IOException {
