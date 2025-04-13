@@ -1,6 +1,12 @@
 package umm3601;
 
 import java.util.Arrays;
+// import java.util.HashMap;
+// import java.util.Map;
+// import java.util.Set;
+// import java.util.UUID;
+// import java.util.concurrent.ConcurrentHashMap;
+// import java.util.concurrent.TimeUnit;
 
 import com.mongodb.MongoClientSettings;
 import com.mongodb.ServerAddress;
@@ -8,9 +14,12 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 
 import org.bson.UuidRepresentation;
+// import org.bson.json.JsonObject;
+// import org.json.JSONObject;
 
 import io.javalin.Javalin;
 import io.javalin.http.InternalServerErrorResponse;
+// import io.javalin.websocket.WsContext;
 
 /**
  * The class used to configure and start a Javalin server.
@@ -20,12 +29,33 @@ public class Server {
   // The port that the server should run on.
   private static final int SERVER_PORT = 4567;
 
+  // How long we should wait between updating we sockets information
+
+  // private static final long WEB_SOCKET_PING_INTERNAL = 5; // testing implementation
+//
+  // Clients connection via web sockets
+
+  // private static Set<WsContext> connectedClients = ConcurrentHashMap.newKeySet(); // testing implementation
+
   // The `mongoClient` field is used to access the MongoDB
   private final MongoClient mongoClient;
 
   // The `controllers` field is an array of all the `Controller` implementations
   // for the server. This is used to add routes to the server.
   private Controller[] controllers;
+
+  // Update the Game State
+  // private int currentRound = 1;
+  // private Map<String, Integer> playerScores = new HashMap<>(); // Player name -> score
+  // private String currentJudge = null;
+  // private String roundWinner = null;
+  // private String gameWinner = null;
+
+  // // Game Management
+  // private Map<String, Map<String, Integer>> gamePlayerScores = new ConcurrentHashMap<>(); // gameCode -> playerScores
+  // private Map<String, Set<WsContext>> gameConnections = new ConcurrentHashMap<>(); // gameCode -> connectedClients
+  // private Map<WsContext, String> clientsGames = new ConcurrentHashMap<>(); // client -> gameCode
+  // private Map<WsContext, String> clientIds = new ConcurrentHashMap<>(); // Map WsContext to custom ID
 
   /**
    * Construct a `Server` object that we'll use (via `startServer()`) to configure
@@ -81,6 +111,7 @@ public class Server {
    * JVM is shut down.
    */
   void startServer() {
+    System.out.println("starting a server at port " + SERVER_PORT);
     Javalin javalin = configureJavalin();
     setupRoutes(javalin);
     javalin.start(SERVER_PORT);
