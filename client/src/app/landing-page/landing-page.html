@@ -1,4 +1,4 @@
-<div class="flex-row">
+<!-- <div class="flex-row">
   <div class="flex-1">
     <mat-card class="home-card">
       <mat-card-content>
@@ -9,13 +9,65 @@
     </mat-card>
     <mat-card class="home-card">
       <mat-card-content>
-        <input id="code-input" type="text" [(ngModel)]="joinId">
-        <a routerLink="/game/{{joinId}}">
-          <button id="join-game">
+        <input id="code-input" type="text" [(ngModel)]="joinId" placeholder="Enter Game Code"> -->
+        <!-- <a routerLink="/game/{{joinId}}"> -->
+          <!-- <button id="join-game" [routerLink]="'/game/' + joinId" [attr.disable]="!joinId ? 'disable' : null">
             Join Game
           </button>
-        </a>
       </mat-card-content>
     </mat-card>
   </div>
+</div> -->
+
+<div class="flex-row">
+  <div class="flex-1">
+    <mat-card class="home-card game-card">
+      <mat-card-content class="game-card-content">
+        <div class="button-container">
+          <mat-card-actions>
+            <button
+            mat-raised-buttons
+            type="button"
+            color="primary"
+            data-test="create-gameButton"
+            routerLink="/game/new"
+            class="game-button create-gameButton"
+            >
+          <span class="button-text">Create Game </span>
+        </button>
+          </mat-card-actions>
+        </div>
+        <div class="input-container">
+          <input
+          id="code-input"
+          type="text"
+          [(ngModel)]="joinId"
+          placeholder="Enter Game ID"/>
+        </div>
+
+        <a routerLink="/game/{{joinId}}">
+          <button
+          id="join-gameButton"
+          mat-raised-button
+          type="button"
+          color="accent"
+          class="game-button join-gameButton" >
+        <span class="button-text">Join Game</span></button>
+        </a>
+        <!-- <button id="create-game" (click)="createGame()">
+          Create New Game
+        </button> -->
+      </mat-card-content>
+    </mat-card>
+    <!-- <mat-card class="home-card">
+      <mat-card-content> -->
+        <!-- <input id="code-input" type="text" [(ngModel)]="joinId" placeholder="Enter Game Code">
+        <a routerLink="/game/{{joinId}}">
+          <button id="join-game" [routerLink]="'/game/' + joinId" [attr.disable]="!joinId ? 'disable' : null">
+            Join Game
+          </button> -->
+      <!-- </mat-card-content>
+    </mat-card> -->
+  </div>
 </div>
+

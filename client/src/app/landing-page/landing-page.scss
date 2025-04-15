@@ -1,0 +1,114 @@
+html, body {
+  margin: 4;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background-color:blueviolet;
+}
+
+
+// .flex-1 {
+//   margin: auto;
+//   background-color: whitesmoke;
+// }
+.flex-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  //margin: auto;
+  background-color: linen;
+}
+
+.home-card{
+  width: 80%;
+  max-width: 900px;
+  background-color: beige;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+  padding: 50px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+ // align-items: center;
+  gap: 28px;
+
+  width: 100%;
+}
+
+.create-gameButton, .join-gameButton {
+  //background-color: palevioletred; /* Matching blue */
+  color: white;
+  width: auto;
+  padding: 16px 32px;
+  font-size: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+  width: 60vh;
+}
+
+.host-button .button-text, .join-button .button-text {
+  font-weight: 600;
+}
+
+
+// .home-card {
+//   margin-bottom: 15px;
+
+//   mat-card-content {
+//     flex-direction: column;
+//     align-items: stretch; //make buttons take full width on smaller screen
+
+//     #create-game,
+//     #join-game {
+//       width: 100%;
+
+//     }
+//   }
+// }
+//#create-game,
+// #join-game {
+//   transition: background-color 0.3s ease;
+//   color: white;
+//   width: auto;
+//   padding: 16px 32px;
+//   font-size: 1.5rem;
+//   font-weight: bold;
+//   // cursor: pointer;
+//   text-align: center;
+//   text-decoration: none; // Remove default link styling
+//   display: inline-block; // allows settings padding and margin
+//   border-radius: 12px;
+//   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+
+// }
+
+.create-gameButton {
+  background-color: darkolivegreen;
+  color: #FFE4E1;
+  height: 100%;
+
+
+}
+
+.join-gameButton {
+  background-color: olive;
+  // color: #556B2F;
+
+}
+
+.input-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
