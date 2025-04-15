@@ -1,12 +1,8 @@
 package umm3601;
 
 import java.util.Arrays;
-// import java.util.HashMap;
-// import java.util.Map;
-// import java.util.Set;
-// import java.util.UUID;
-// import java.util.concurrent.ConcurrentHashMap;
-// import java.util.concurrent.TimeUnit;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.mongodb.MongoClientSettings;
 import com.mongodb.ServerAddress;
@@ -14,12 +10,10 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 
 import org.bson.UuidRepresentation;
-// import org.bson.json.JsonObject;
-// import org.json.JSONObject;
 
 import io.javalin.Javalin;
 import io.javalin.http.InternalServerErrorResponse;
-// import io.javalin.websocket.WsContext;
+import io.javalin.websocket.WsContext;
 
 /**
  * The class used to configure and start a Javalin server.
@@ -43,6 +37,8 @@ public class Server {
   // The `controllers` field is an array of all the `Controller` implementations
   // for the server. This is used to add routes to the server.
   private Controller[] controllers;
+
+  private static final Set<WsContext> connectedClients = ConcurrentHashMap.newKeySet();
 
   // Update the Game State
   // private int currentRound = 1;
@@ -202,6 +198,17 @@ public class Server {
     // `controllers` array.
     for (Controller controller : controllers) {
       controller.addRoutes(server);
+    }
+
+    server.ws("/api/game/updates", ws -> {
+      ws.onConnect(ctx -> connectedClients.add(ctx));
+      ws.onClose(ctx -> connectedClients.remove(ctx));
+    });
+  }
+
+  public static void broadcastUpdate(String message) {
+    for (WsContext client : connectedClients) {
+      client.send(message);
     }
   }
 }

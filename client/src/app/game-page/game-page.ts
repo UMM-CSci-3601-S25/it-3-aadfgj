@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, WritableSignal } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { MatInputModule } from '@angular/material/input';
@@ -9,7 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { Game } from '../game';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import { toSignal } from '@angular/core/rxjs-interop';
+//import { toSignal } from '@angular/core/rxjs-interop';
 import { of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common'; // Import CommonModule
@@ -33,9 +33,23 @@ import { CommonModule } from '@angular/common'; // Import CommonModule
 })
 export class GameComponent {
   prompt: string = ''; // Initialize the prompt property
-  game = toSignal(
+  game: WritableSignal<Game | null> = signal(null); // Use WritableSignal and initialize with null
+  error = signal({help: '', httpResponse: '', message: ''});
+
+  private socket: WebSocket;
+
+  constructor(
+    private route: ActivatedRoute,
+    private httpClient: HttpClient
+  ) {
+    this.socket = new WebSocket('ws://localhost:4567/api/game/updates');
+    this.socket.onmessage = (event) => {
+      console.log('WebSocket message received:', event.data);
+      this.refreshGame(); // Refresh game data on update
+    };
+
+    // Initialize the game signal with data from the server
     this.route.paramMap.pipe(
-      // Map the paramMap into the id
       map((paramMap: ParamMap) => paramMap.get('id')),
       switchMap((id: string) => this.httpClient.get<Game>(`/api/game/${id}`)),
       catchError((_err) => {
@@ -44,11 +58,19 @@ export class GameComponent {
           httpResponse: _err.message,
           message: _err.error?.title,
         });
-        return of();
+        return of(null);
       })
+    ).subscribe((game) => this.game.set(game)); // Update the signal with the fetched game
+  }
 
-    ));
-  error = signal({help: '', httpResponse: '', message: ''});
+  refreshGame() {
+    const gameId = this.game()?.['_id'];
+    if (gameId) {
+      this.httpClient.get<Game>(`/api/game/${gameId}`).subscribe((updatedGame) => {
+        this.game.set(updatedGame); // Update the game state
+      });
+    }
+  }
 
   submitPrompt() {
     const gameId = this.game()?._id;
@@ -187,10 +209,5 @@ export class GameComponent {
     }
     return true;
   }
-
-  constructor(
-    private route: ActivatedRoute,
-    private httpClient: HttpClient
-  ) {}
 
 }
