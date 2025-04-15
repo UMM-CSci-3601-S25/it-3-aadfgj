@@ -44,8 +44,17 @@ export class GameComponent {
   ) {
     this.socket = new WebSocket('ws://localhost:4567/api/game/updates');
     this.socket.onmessage = (event) => {
+      if (event.data === 'ping') {
+        // Ignore ping messages
+        return;
+      }
       console.log('WebSocket message received:', event.data);
       this.refreshGame(); // Refresh game data on update
+    };
+
+    this.socket.onclose = () => {
+      console.warn('WebSocket connection closed. Reconnecting...');
+      this.reconnectWebSocket(); // Reconnect if the WebSocket is closed
     };
 
     // Initialize the game signal with data from the server
@@ -61,6 +70,23 @@ export class GameComponent {
         return of(null);
       })
     ).subscribe((game) => this.game.set(game)); // Update the signal with the fetched game
+  }
+
+  private reconnectWebSocket() {
+    setTimeout(() => {
+      this.socket = new WebSocket('ws://localhost:4567/api/game/updates');
+      this.socket.onmessage = (event) => {
+        if (event.data === 'ping') {
+          return;
+        }
+        console.log('WebSocket message received:', event.data);
+        this.refreshGame();
+      };
+      this.socket.onclose = () => {
+        console.warn('WebSocket connection closed. Reconnecting...');
+        this.reconnectWebSocket();
+      };
+    }, 1000); // Attempt to reconnect after 1 second
   }
 
   refreshGame() {

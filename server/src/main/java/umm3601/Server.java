@@ -2,6 +2,8 @@ package umm3601;
 
 import java.util.Arrays;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.mongodb.MongoClientSettings;
@@ -39,6 +41,7 @@ public class Server {
   private Controller[] controllers;
 
   private static final Set<WsContext> connectedClients = ConcurrentHashMap.newKeySet();
+  private static final long PING_INTERVAL_MS = 30000; // 30 seconds
 
   // Update the Game State
   // private int currentRound = 1;
@@ -110,6 +113,7 @@ public class Server {
     System.out.println("starting a server at port " + SERVER_PORT);
     Javalin javalin = configureJavalin();
     setupRoutes(javalin);
+    startWebSocketPing(); // Start the WebSocket ping mechanism
     javalin.start(SERVER_PORT);
   }
 
@@ -204,6 +208,20 @@ public class Server {
       ws.onConnect(ctx -> connectedClients.add(ctx));
       ws.onClose(ctx -> connectedClients.remove(ctx));
     });
+  }
+
+  private void startWebSocketPing() {
+    Timer timer = new Timer(true); // Daemon thread
+    timer.scheduleAtFixedRate(new TimerTask() {
+      @Override
+      public void run() {
+        for (WsContext client : connectedClients) {
+          if (client.session.isOpen()) {
+            client.send("ping"); // Send a ping message to keep the connection alive
+          }
+        }
+      }
+    }, PING_INTERVAL_MS, PING_INTERVAL_MS);
   }
 
   public static void broadcastUpdate(String message) {
