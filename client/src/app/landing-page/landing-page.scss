@@ -22,7 +22,7 @@ html, body {
 }
 
 .home-card{
-  width: 80%;
+  width: 100%;
   max-width: 900px;
   background-color: beige;
   border-radius: 12px;
@@ -33,6 +33,7 @@ html, body {
   align-items: center;
   justify-content: center;
   padding: 50px;
+  margin-bottom: 12px;
 }
 
 .button-container {
@@ -44,7 +45,7 @@ html, body {
   width: 100%;
 }
 
-.create-gameButton, .join-gameButton {
+#create-game, #join-game {
   //background-color: palevioletred; /* Matching blue */
   color: white;
   width: auto;
@@ -52,7 +53,7 @@ html, body {
   font-size: 1.5rem;
   border-radius: 10px;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-  width: 60vh;
+  width: 50vh;
 }
 
 .host-button .button-text, .join-button .button-text {
@@ -91,7 +92,7 @@ html, body {
 
 // }
 
-.create-gameButton {
+#create-game {
   background-color: darkolivegreen;
   color: #FFE4E1;
   height: 100%;
@@ -99,7 +100,7 @@ html, body {
 
 }
 
-.join-gameButton {
+#join-game {
   background-color: olive;
   // color: #556B2F;
 
@@ -111,4 +112,5 @@ html, body {
   width: 100%;
   margin-top: 20px;
   margin-bottom: 10px;
+  //margin-right: 12px;
 }
