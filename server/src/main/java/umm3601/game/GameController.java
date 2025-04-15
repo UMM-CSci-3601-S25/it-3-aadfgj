@@ -18,6 +18,7 @@ import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import io.javalin.http.NotFoundResponse;
 import umm3601.Controller;
+import umm3601.Server;
 
 
 
@@ -79,6 +80,7 @@ public class GameController implements Controller {
     // }
 
     gameCollection.updateById(new ObjectId(id), newGameDoc);
+    Server.broadcastUpdate("Game updated: " + id); // Notify WebSocket clients
     ctx.status(HttpStatus.OK);
   }
 
