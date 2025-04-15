@@ -1,0 +1,144 @@
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #0f0f3c;
+  font-family: 'Press Start 2P';
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+h1 {
+  font-size: 5rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: #e94560;
+  text-shadow: 7px 7px 15px rgba(233, 69, 96, 0.8), 0 -2px 5px rgba(255, 255, 255, 0.6);
+  margin-bottom: 50px;
+  text-align: center;
+
+}
+.flex-row {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 800px;
+}
+
+.home-card {
+  width: 600px;
+  height: 450px;
+  background-color: #1a1a3c;
+  border-radius: 15px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 50px;
+  margin: 20px;
+  transition: transform 0.3s, box-shadow 0.3s;
+  font-size: 1.5rem; 
+}
+
+.home-card#join-game-card {
+  width: 500px;
+  height: auto;
+  background-color: #1a1a3c;
+  border-radius: 15px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 50px;
+  margin: 20px;
+  font-size: 1.5rem;
+  gap: 30px;
+}
+
+
+input#code-input {
+  width: 90%;
+  padding: 12px;
+  border: 3px solid #e94560;
+  border-radius: 12px;
+  background-color: #0f0f3c;
+  color: #ffffff;
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  outline: none;
+}
+
+button#join-game {
+  width: 250px;
+  height: 70px;
+  background-color: #e94560;
+  color: #ffffff;
+  border: none;
+  border-radius: 15px;
+  font-size: 2rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+button#join-game:hover {
+  transform: translateY(-8px);
+  box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+
+.home-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.6);
+}
+
+
+button {
+  width: 270px;
+  height: 140px;
+  background-color: #e94560;
+  color: #ffffff;
+  border: none;
+  border-radius: 30px;
+  font-size: 2rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+
+button:hover {
+  transform: translateY(-8px);
+  box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+
+input {
+  width: 90%;
+  height: 40px;
+  padding: 12px;
+  border: 3px solid #e94560;
+  border-radius: 15px;
+  background-color: #0f0f3c;
+  color: #ffffff;
+  font-size: 1.5rem;
+  outline: none;
+}
+
+
+a {
+  text-decoration: none;
+}
