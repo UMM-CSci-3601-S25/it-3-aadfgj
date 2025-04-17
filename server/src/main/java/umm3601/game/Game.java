@@ -17,4 +17,6 @@ public class Game {
   public boolean discardLast;
   public boolean winnerBecomesJudge;
   public String[] pastResponses;
+
+  public Object prompt;
 }

@@ -70,17 +70,37 @@ public class GameController implements Controller {
   }
 
   public void editGame(Context ctx) {
-    // Game newGame = ctx.bodyValidator(Game.class).get();
-    Document newGameDoc = Document.parse(ctx.body());
     String id = ctx.pathParam("id");
-    // Game oldGame = gameCollection.find(eq("_id", new ObjectId(id))).first();
+    Document newGameDoc;
 
-    // if (oldGame == null) {
-    //   throw new NotFoundResponse("The game with the specified ID was not found.");
-    // }
+    try {
+      newGameDoc = Document.parse(ctx.body());
+    } catch (Exception e) {
+      throw new BadRequestResponse("Invalid JSON format in request body.");
+    }
 
-    gameCollection.updateById(new ObjectId(id), newGameDoc);
-    Server.broadcastUpdate("Game updated: " + id); // Notify WebSocket clients
+    if (!newGameDoc.containsKey("$set") || !(newGameDoc.get("$set") instanceof Document)) {
+      throw new BadRequestResponse("Invalid update format. Expected a '$set' document.");
+    }
+
+    Document updateFields = newGameDoc.get("$set", Document.class);
+
+    // Example validation: Ensure 'judge' is an integer if provided
+    if (updateFields.containsKey("judge") && !(updateFields.get("judge") instanceof Integer)) {
+      throw new BadRequestResponse("'judge' must be an integer.");
+    }
+
+    try {
+      if (gameCollection.find(eq("_id", new ObjectId(id))).first() == null) {
+        throw new IllegalArgumentException("The game with the specified ID was not found.");
+      }
+      gameCollection.updateById(new ObjectId(id), newGameDoc);
+    } catch (IllegalArgumentException e) {
+      throw e; // Re-throw to match the expected behavior
+    } catch (Exception e) {
+      throw new BadRequestResponse("The provided ID is not a valid MongoDB ObjectId.");
+    }
+
     ctx.status(HttpStatus.OK);
   }
 

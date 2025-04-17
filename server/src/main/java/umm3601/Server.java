@@ -40,7 +40,7 @@ public class Server {
   // for the server. This is used to add routes to the server.
   private Controller[] controllers;
 
-  private static final Set<WsContext> connectedClients = ConcurrentHashMap.newKeySet();
+  private static final Set<WsContext> CONNECTED_CLIENTS = ConcurrentHashMap.newKeySet();
   private static final long PING_INTERVAL_MS = 30000; // 30 seconds
 
   // Update the Game State
@@ -205,8 +205,8 @@ public class Server {
     }
 
     server.ws("/api/game/updates", ws -> {
-      ws.onConnect(ctx -> connectedClients.add(ctx));
-      ws.onClose(ctx -> connectedClients.remove(ctx));
+      ws.onConnect(ctx -> CONNECTED_CLIENTS.add(ctx));
+      ws.onClose(ctx -> CONNECTED_CLIENTS.remove(ctx));
     });
   }
 
@@ -215,7 +215,7 @@ public class Server {
     timer.scheduleAtFixedRate(new TimerTask() {
       @Override
       public void run() {
-        for (WsContext client : connectedClients) {
+        for (WsContext client : CONNECTED_CLIENTS) {
           if (client.session.isOpen()) {
             client.send("ping"); // Send a ping message to keep the connection alive
           }
@@ -225,7 +225,7 @@ public class Server {
   }
 
   public static void broadcastUpdate(String message) {
-    for (WsContext client : connectedClients) {
+    for (WsContext client : CONNECTED_CLIENTS) {
       client.send(message);
     }
   }
