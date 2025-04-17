@@ -10,20 +10,32 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { catchError, map, of, switchMap } from 'rxjs';
 import { Game } from '../game';
 import { HttpClient } from '@angular/common/http';
-import { MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-settings-page',
-  templateUrl: 'settings-page.html',
+  templateUrl: './settings-page.html',
   styleUrls: ['./settings-page.scss'],
-  providers: [],
-  imports: [MatCardModule, RouterLink, MatInputModule, MatFormFieldModule, MatSelectModule, FormsModule, MatCheckboxModule, MatSlideToggleModule]
+  standalone: true,
+  imports: [
+    MatCardModule,
+    RouterLink,
+    MatInputModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    FormsModule,
+    MatCheckboxModule,
+    MatSlideToggleModule,
+    MatIconModule,
+    MatTooltipModule
+  ]
 })
-export class SettingsComponent {
-
+export class SettingsPageComponent {
   judgeOption = signal<boolean | undefined>(false);
   private judgeOption$ = toObservable(this.judgeOption);
-  // default = 'false';
+  showCopyFeedback = signal(false);
 
   game = toSignal(
     this.route.paramMap.pipe(
@@ -39,22 +51,42 @@ export class SettingsComponent {
       })
     )
   );
-  error = signal({help: '', httpResponse: '', message: ''});
 
-  constructor (
+  error = signal({ help: '', httpResponse: '', message: '' });
+
+  constructor(
     private route: ActivatedRoute,
     private httpClient: HttpClient
   ) {}
 
-
-  updateGameSettings() {
-    // const winnerBecomesJudge = { winnerBecomesJudge: this.judgeOption() };
-    console.log(this.judgeOption());
+  copyGameCode() {
     const gameId = this.game()?._id;
     if (gameId) {
-      this.httpClient.put<Game>(`/api/game/edit/${gameId}`, {$set:{winnerBecomesJudge: this.judgeOption()}}).subscribe();
+      navigator.clipboard.writeText(gameId)
+        .then(() => {
+          this.showCopyFeedback.set(true);
+          setTimeout(() => this.showCopyFeedback.set(false), 2000);
+        })
+        .catch(() => {
+          const textarea = document.createElement('textarea');
+          textarea.value = gameId;
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textarea);
+          this.showCopyFeedback.set(true);
+          setTimeout(() => this.showCopyFeedback.set(false), 2000);
+        });
     }
   }
 
-
+  updateGameSettings() {
+    const gameId = this.game()?._id;
+    if (gameId) {
+      this.httpClient.put<Game>(
+        `/api/game/edit/${gameId}`,
+        { $set: { winnerBecomesJudge: this.judgeOption() } }
+      ).subscribe();
+    }
+  }
 }
