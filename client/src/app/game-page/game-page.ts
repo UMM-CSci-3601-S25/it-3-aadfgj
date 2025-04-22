@@ -48,7 +48,7 @@ export class GameComponent {
         // Ignore ping messages
         return;
       }
-      console.log('WebSocket message received:', event.data);
+      //console.log('WebSocket message received:', event.data);
       this.refreshGame(); // Refresh game data on update
     };
 
@@ -79,7 +79,7 @@ export class GameComponent {
         if (event.data === 'ping') {
           return;
         }
-        console.log('WebSocket message received:', event.data);
+        //console.log('WebSocket message received:', event.data);
         this.refreshGame();
       };
       this.socket.onclose = () => {
@@ -189,6 +189,13 @@ export class GameComponent {
     const scores = this.game()?.scores;
     const pastResponses = this.game()?.pastResponses || [];
     scores[this.playerPerm[i]]++;
+
+    // Check if the player has reached the winning score
+    const winningScore = this.game()?.winningScore;
+    if (scores[this.playerPerm[i]] >= winningScore) {
+      //console.log(`Player ${this.game()?.players[this.playerPerm[i]]} has won the game!`);
+      return; // Exit early if a winner is found
+    }
 
     // Append all responses to pastResponses
     for (let j = 0; j < this.game()?.responses.length; j++) {
