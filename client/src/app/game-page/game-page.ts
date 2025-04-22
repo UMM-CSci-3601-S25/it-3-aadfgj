@@ -235,5 +235,34 @@ export class GameComponent {
     }
     return true;
   }
+    // Function for adding up points and return the winner or winners if there is a tiy
+    determineWinner(): { player: string; score: number }[] {
+      const scoresMap: { [key: string]: number} = {};
+      const players = this.game()?.players || [];
+      const scores = this.game()?.scores || [];
+
+      for (let i = 0; i < players.length; i++) {
+        scoresMap[players[i]] = scores[i];
+      }
+
+      const sortedPlayers = Object.entries(scoresMap).sort(([, scoreA], [, scoreB]) => scoreB - scoreA);
+
+      if (sortedPlayers.length === 0) {
+        return [];
+      }
+
+      const highestScore = sortedPlayers[0][1];
+      const winners: { player: string; score: number}[] = []
+
+      for (const [player, score] of sortedPlayers) {
+        if (score === highestScore) {
+          winners.push({player, score});
+
+        } else {
+          break; // the array is sorted therefore no more winners can exist
+        }
+      }
+      return winners;
+    }
 
 }
