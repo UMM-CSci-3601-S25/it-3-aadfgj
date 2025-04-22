@@ -36,7 +36,7 @@ export class SettingsPageComponent {
   judgeOption = signal<boolean | undefined>(false);
   private judgeOption$ = toObservable(this.judgeOption);
   showCopyFeedback = signal(false);
-  winningScore = signal<number | undefined>(10); // Default winning score
+  winningScore = signal<number | undefined>(1); // Default winning score
 
   game = toSignal(
     this.route.paramMap.pipe(
