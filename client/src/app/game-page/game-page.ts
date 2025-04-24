@@ -235,7 +235,7 @@ export class GameComponent {
     }
     return true;
   }
-    // Function for adding up points and return the winner or winners if there is a tiy
+    // Function for adding up points and return the winner or winners if there is a tie
     determineWinner(): { player: string; score: number }[] {
       const scoresMap: { [key: string]: number} = {};
       const players = this.game()?.players || [];
