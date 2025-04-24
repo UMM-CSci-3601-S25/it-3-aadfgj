@@ -218,7 +218,7 @@ export class GameComponent {
           //console.log(`Judge updated to player index: ${newJudge}`);
         });
       } else {
-        const newJudge = (this.game()?.judge + 1) % this.game()?.players.length; // Increment judge to the next player
+        const newJudge = (this.game()?.judge + 1) % (this.game()?.players.length || 1); // Increment judge to the next player
         this.httpClient.put<Game>(`/api/game/edit/${gameId}`, { $set: { judge: newJudge } }).subscribe(() => {
           this.game().judge = newJudge; // Update the local game object
           //console.log(`Judge updated to player index: ${newJudge}`);
@@ -237,7 +237,7 @@ export class GameComponent {
   }
     // Function for adding up points and return the winner or winners if there is a tie
     determineWinner(): { player: string; score: number }[] {
-      const scoresMap: { [key: string]: number} = {};
+      const scoresMap: { [key: string]: number | undefined } = {}; // will now allow undefined scores
       const players = this.game()?.players || [];
       const scores = this.game()?.scores || [];
 
@@ -245,16 +245,17 @@ export class GameComponent {
         scoresMap[players[i]] = scores[i];
       }
 
-      const sortedPlayers = Object.entries(scoresMap).sort(([, scoreA], [, scoreB]) => scoreB - scoreA);
+      const validScores = Object.entries(scoresMap)
+      .filter(([, score]) => typeof score === 'number') // Filter out players with undefine scores
+      .sort(([, scoreA], [, scoreB]) => (scoreB as number) - (scoreA as number)) as [string, number][]; // Explicitly cast after filtering
 
-      if (sortedPlayers.length === 0) {
-        return [];
-      }
+    if (validScores.length === 0) {
+      return [];
+    }
 
-      const highestScore = sortedPlayers[0][1];
-      const winners: { player: string; score: number}[] = []
-
-      for (const [player, score] of sortedPlayers) {
+    const highestScore = validScores[0][1];
+    const winners: { player: string; score: number}[] = [];
+      for (const [player, score] of validScores) {
         if (score === highestScore) {
           winners.push({player, score});
 
@@ -266,3 +267,5 @@ export class GameComponent {
     }
 
 }
+
+export { Game };
