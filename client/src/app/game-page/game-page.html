@@ -8,11 +8,11 @@
       </mat-form-field>
     </mat-card>
     <h1 style="margin: 0 5%">{{ this.game()?.responses[this.game()?.judge]}}</h1>
-    <!-- Display the winner dynamically -->
     <h2 *ngIf="game()?.winner" style="color: red; text-align: center;">
        {{ game()?.winner }} has won the game!
     </h2>
     <ul style="float: right; width: 25%; color: green">
+
       <li *ngFor="let player of this.game()?.players; let i = index">
         {{ this.game()?.scores[i] }} - <span [style.textDecoration]="i === this.game()?.judge ? 'underline' : 'none'">{{ player }}</span> - {{ this.game()?.pastResponses[i] }}
       </li>
