@@ -1,3 +1,4 @@
+
 import { Component, signal } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { RouterLink, ActivatedRoute, ParamMap } from '@angular/router';
@@ -13,6 +14,7 @@ import { HttpClient } from '@angular/common/http';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+
 
 @Component({
   selector: 'app-settings-page',
@@ -37,6 +39,7 @@ export class SettingsPageComponent {
   private judgeOption$ = toObservable(this.judgeOption);
   showCopyFeedback = signal(false);
 
+
   game = toSignal(
     this.route.paramMap.pipe(
       map((paramMap: ParamMap) => paramMap.get('id')),
@@ -52,12 +55,15 @@ export class SettingsPageComponent {
     )
   );
 
+
   error = signal({ help: '', httpResponse: '', message: '' });
+
 
   constructor(
     private route: ActivatedRoute,
     private httpClient: HttpClient
   ) {}
+
 
   copyGameCode() {
     const gameId = this.game()?._id;
@@ -80,6 +86,7 @@ export class SettingsPageComponent {
     }
   }
 
+
   updateGameSettings() {
     const gameId = this.game()?._id;
     if (gameId) {
@@ -90,3 +97,5 @@ export class SettingsPageComponent {
     }
   }
 }
+
+
