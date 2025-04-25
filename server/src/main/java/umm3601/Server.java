@@ -226,7 +226,9 @@ public class Server {
 
   public static void broadcastUpdate(String message) {
     for (WsContext client : connectedClients) {
-      client.send(message);
+      if (client.session.isOpen()) {
+        client.send(message); // Send the update message to all connected clients
+      }
     }
   }
 }

@@ -10,7 +10,6 @@ public class Game {
   public String _id;
 
   public String[] players;
-  //public String prompt;
   public String[] responses;
   public int judge;
   public int[] scores;
@@ -18,4 +17,5 @@ public class Game {
   public boolean winnerBecomesJudge;
   public String[] pastResponses;
   public int winningScore;
+  public String winner; // Add a field to store the winner's name
 }

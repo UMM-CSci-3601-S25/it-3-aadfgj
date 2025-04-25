@@ -48,26 +48,13 @@ export class GameComponent {
         // Ignore ping messages
         return;
       }
-      //console.log('WebSocket message received:', event.data);
+      console.log('WebSocket message received:', event.data);
       this.refreshGame(); // Refresh game data on update
     };
 
     this.socket.onclose = () => {
       console.warn('WebSocket connection closed. Reconnecting...');
       this.reconnectWebSocket(); // Reconnect if the WebSocket is closed
-    };
-
-    // New WebSocket for winner notifications
-    const winnerSocket = new WebSocket('ws://localhost:4567/api/game/winner');
-    winnerSocket.onmessage = (event) => {
-      const winnerData = JSON.parse(event.data);
-      if (winnerData.winner) {
-        alert(`Player ${winnerData.winner} has won the game!`); // Display popup for all players
-      }
-    };
-
-    winnerSocket.onclose = () => {
-      console.warn('Winner WebSocket connection closed.');
     };
 
     // Initialize the game signal with data from the server
@@ -92,7 +79,7 @@ export class GameComponent {
         if (event.data === 'ping') {
           return;
         }
-        //console.log('WebSocket message received:', event.data);
+        console.log('WebSocket message received:', event.data);
         this.refreshGame();
       };
       this.socket.onclose = () => {
@@ -203,16 +190,6 @@ export class GameComponent {
     const pastResponses = this.game()?.pastResponses || [];
     scores[this.playerPerm[i]]++;
 
-    // Check if the player has reached the winning score
-    const winningScore = this.game()?.winningScore;
-    if (scores[this.playerPerm[i]] >= winningScore) {
-      this.httpClient.put<Game>(`/api/game/edit/${gameId}`, { $set: { winner: this.game()?.players[this.playerPerm[i]] } }).subscribe(() => {
-        window.location.href = '/winner'; // Redirect to the winner page
-        console.log(`Player ${this.game()?.players[this.playerPerm[i]]} has won the game!`);
-      });
-      return; // Exit early if a winner is found
-    }
-
     // Append all responses to pastResponses
     for (let j = 0; j < this.game()?.responses.length; j++) {
       pastResponses[j] = this.game()?.responses[j];
@@ -248,6 +225,21 @@ export class GameComponent {
         });
       }
     });
+
+    // Check if the player has reached the winning score
+    const winningScore = this.game()?.winningScore;
+    if (scores[this.playerPerm[i]] >= winningScore) {
+      const winner = this.game()?.players[this.playerPerm[i]];
+      console.log(`Player ${winner} has won the game!`);
+      //alert(`Player ${winner} has won the game!`); // Display the winner on the screen
+
+      // Update the winner property in the game object
+      this.httpClient.put<Game>(`/api/game/edit/${gameId}`, { $set: { winner: winner } }).subscribe(() => {
+        this.game().winner = winner; // Update the local game object
+      });
+
+      return; // Exit early if a winner is found
+    }
   }
 
   responsesReady() {
