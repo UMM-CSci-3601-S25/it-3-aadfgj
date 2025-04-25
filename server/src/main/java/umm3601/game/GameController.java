@@ -70,17 +70,19 @@ public class GameController implements Controller {
   }
 
   public void editGame(Context ctx) {
-    // Game newGame = ctx.bodyValidator(Game.class).get();
     Document newGameDoc = Document.parse(ctx.body());
     String id = ctx.pathParam("id");
-    // Game oldGame = gameCollection.find(eq("_id", new ObjectId(id))).first();
-
-    // if (oldGame == null) {
-    //   throw new NotFoundResponse("The game with the specified ID was not found.");
-    // }
 
     gameCollection.updateById(new ObjectId(id), newGameDoc);
-    Server.broadcastUpdate("Game updated: " + id); // Notify WebSocket clients
+
+    // Check if the winner field is updated
+    if (newGameDoc.containsKey("winner")) {
+      String winner = newGameDoc.getString("winner");
+      Server.broadcastUpdate("{\"winner\": \"" + winner + "\"}"); // Notify WebSocket clients about the winner
+    } else {
+      Server.broadcastUpdate("Game updated: " + id); // Notify WebSocket clients about other updates
+    }
+
     ctx.status(HttpStatus.OK);
   }
 

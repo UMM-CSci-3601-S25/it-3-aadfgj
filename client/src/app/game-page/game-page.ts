@@ -225,6 +225,21 @@ export class GameComponent {
         });
       }
     });
+
+    // Check if the player has reached the winning score
+    const winningScore = this.game()?.winningScore;
+    if (scores[this.playerPerm[i]] >= winningScore) {
+      const winner = this.game()?.players[this.playerPerm[i]];
+      console.log(`Player ${winner} has won the game!`);
+      //alert(`Player ${winner} has won the game!`); // Display the winner on the screen
+
+      // Update the winner property in the game object
+      this.httpClient.put<Game>(`/api/game/edit/${gameId}`, { $set: { winner: winner } }).subscribe(() => {
+        this.game().winner = winner; // Update the local game object
+      });
+
+      return; // Exit early if a winner is found
+    }
   }
 
   responsesReady() {
