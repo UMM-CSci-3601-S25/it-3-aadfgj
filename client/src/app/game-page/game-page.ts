@@ -14,6 +14,7 @@ import { of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common'; // Import CommonModule
 //import { console } from 'inspector';
+import { environment } from 'src/environments/environment';
 
 
 @Component({
@@ -42,7 +43,7 @@ export class GameComponent {
     private route: ActivatedRoute,
     private httpClient: HttpClient
   ) {
-    this.socket = new WebSocket('ws://localhost:4567/api/game/updates');
+    this.socket = new WebSocket(`${environment.wsUrl}`);
     this.socket.onmessage = (event) => {
       if (event.data === 'ping') {
         // Ignore ping messages
@@ -74,7 +75,7 @@ export class GameComponent {
 
   private reconnectWebSocket() {
     setTimeout(() => {
-      this.socket = new WebSocket('ws://localhost:4567/api/game/updates');
+      this.socket = new WebSocket(`${environment.wsUrl}`);
       this.socket.onmessage = (event) => {
         if (event.data === 'ping') {
           return;
