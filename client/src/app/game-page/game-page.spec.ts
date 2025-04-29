@@ -288,7 +288,7 @@ describe('GameComponent', () => {
     component.usernameInput = 'Player1'; // Simulate a username input
 
 
-    const httpClientSpy = spyOn(component['httpClient'], 'put').and.callFake((url: any, body: { $set: { judge: any; }; }) => {
+    const httpClientSpy = spyOn(component['httpClient'], 'put').and.callFake((url, body: { $set: { judge: number; }; }) => {
       if (body.$set.judge !== undefined) {
         mockGame.judge = body.$set.judge; // Simulate judge update
       }
@@ -387,7 +387,7 @@ describe('GameComponent', () => {
     component.playerPerm = [1, 2]; // Mock the shuffled player order
 
 
-    const httpClientSpy = spyOn(component['httpClient'], 'put').and.callFake((url: any, body: { $set: { judge: number; }; }) => {
+    const httpClientSpy = spyOn(component['httpClient'], 'put').and.callFake((url, body: { $set: { judge: number; }; }) => {
       if (body.$set.judge !== undefined) {
         component.game().judge = body.$set.judge; // Simulate judge update
       }
@@ -437,7 +437,7 @@ describe('GameComponent', () => {
     component.submission = 'Test Prompt'; // Set a test submission
 
 
-    const httpClientSpy = spyOn(component['httpClient'], 'put').and.callFake((url: any, body: any) => {
+    const httpClientSpy = spyOn(component['httpClient'], 'put').and.callFake((url, body) => {
       expect(url).toBe(`/api/game/edit/test-game-id`); // Verify the correct URL
       expect(body).toEqual({ $set: { prompt: 'Test Prompt' } }); // Verify the correct payload
       return of(null); // Simulate an observable response
@@ -534,7 +534,7 @@ describe('GameComponent', () => {
     component.game = signal(mockGame); // Mock the game object
     component.playerPerm = [0, 1, 2]; // Mock the player order
 
-    const httpClientSpy = spyOn(component['httpClient'], 'put').and.callFake((url: string, body: any) => {
+    const httpClientSpy = spyOn(component['httpClient'], 'put').and.callFake((url: string, body) => {
       expect(url).toBe(`/api/game/edit/test-game-id`); // Verify the correct URL
       expect(body).toEqual({ $set: { winner: 'Player2' } }); // Verify the correct payload
       mockGame.winner = 'Player2'; // Simulate updating the winner
