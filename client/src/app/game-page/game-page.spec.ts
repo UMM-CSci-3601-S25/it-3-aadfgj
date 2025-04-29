@@ -435,6 +435,41 @@ describe('GameComponent', () => {
     }, 0); // Wait for the asynchronous update
   });
 
+  it('should ignore "ping" messages and not refresh the game', () => {
+    const refreshSpy = spyOn(component, 'refreshGame');
+    const consoleSpy = spyOn(console, 'log');
+    const mockEvent = { data: 'ping' } as MessageEvent;
+
+    component['socket'].onmessage(mockEvent);
+
+    expect(refreshSpy).not.toHaveBeenCalled(); // Ensure refreshGame is not called
+    expect(consoleSpy).not.toHaveBeenCalled(); // Ensure no log for "ping"
+  });
+
+  it('should log and refresh the game for non-"ping" messages', () => {
+    const refreshSpy = spyOn(component, 'refreshGame');
+    const consoleSpy = spyOn(console, 'log');
+    const mockEvent = { data: 'update' } as MessageEvent;
+
+    component['socket'].onmessage(mockEvent);
+
+    expect(refreshSpy).toHaveBeenCalled(); // Ensure refreshGame is called
+    expect(consoleSpy).toHaveBeenCalledWith('WebSocket message received:', 'update'); // Ensure log is correct
+  });
+
+  it('should reconnect WebSocket when connection is closed', (done) => {
+    const reconnectSpy = spyOn(component as any, 'reconnectWebSocket').and.callThrough();
+    const consoleSpy = spyOn(console, 'warn');
+
+    component['socket'].onclose(new CloseEvent('close'));
+
+    setTimeout(() => {
+      expect(consoleSpy).toHaveBeenCalledWith('WebSocket connection closed. Reconnecting...');
+      expect(reconnectSpy).toHaveBeenCalled(); // Ensure reconnect logic is triggered
+      done();
+    }, 1100); // Wait for the reconnect timeout
+  });
+
 });
 
 
