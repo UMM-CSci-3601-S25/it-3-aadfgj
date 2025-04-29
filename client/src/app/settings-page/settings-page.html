@@ -52,6 +52,17 @@
           </mat-slide-toggle>
           <span>Winner becomes judge</span>
         </div>
+        <div>
+          <span>Winning Score:</span>
+          <input
+            matInput
+            type="number"
+            min="1"
+            [(ngModel)]="winningScore"
+            (change)="updateGameSettings()"
+            placeholder="Enter winning score"
+          />
+        </div>
       </mat-card-content>
     </mat-card>
   </div>

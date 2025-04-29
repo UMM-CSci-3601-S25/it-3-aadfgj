@@ -36,6 +36,7 @@ export class SettingsPageComponent {
   judgeOption = signal<boolean | undefined>(false);
   private judgeOption$ = toObservable(this.judgeOption);
   showCopyFeedback = signal(false);
+  winningScore = signal<number | undefined>(1); // Default winning score
 
   game = toSignal(
     this.route.paramMap.pipe(
@@ -85,7 +86,7 @@ export class SettingsPageComponent {
     if (gameId) {
       this.httpClient.put<Game>(
         `/api/game/edit/${gameId}`,
-        { $set: { winnerBecomesJudge: this.judgeOption() } }
+        { $set: { winnerBecomesJudge: this.judgeOption(), winningScore: this.winningScore() } }
       ).subscribe();
     }
   }
