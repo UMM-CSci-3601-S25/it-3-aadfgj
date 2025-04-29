@@ -231,8 +231,6 @@ export class GameComponent {
     const winningScore = this.game()?.winningScore;
     if (scores[this.playerPerm[i]] >= winningScore) {
       const winner = this.game()?.players[this.playerPerm[i]];
-      console.log(`Player ${winner} has won the game!`);
-      //alert(`Player ${winner} has won the game!`); // Display the winner on the screen
 
       // Update the winner property in the game object
       this.httpClient.put<Game>(`/api/game/edit/${gameId}`, { $set: { winner: winner } }).subscribe(() => {
