@@ -2,6 +2,10 @@ package umm3601.mongotest.game;
 // import static org.junit.jupiter.api.Assertions.assertEquals;
 // import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.contains;
+import static org.mockito.Mockito.mock;
 // import static org.mockito.Mockito.mock;
 // import static org.junit.jupiter.api.Assertions.assertThrows;
 // import static org.mockito.ArgumentMatchers.any;
@@ -24,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import com.mongodb.MongoClientSettings;
@@ -199,4 +204,19 @@ class GameControllerSpec {
     });
   }
 
+
+
+  @Test
+  void testAddRoutes() {
+    Javalin mockServer = mock(Javalin.class);
+    gameController.addRoutes(mockServer);
+    when(mockServer.get(any(), any())).thenReturn(mockServer);
+    when(mockServer.post(any(), any())).thenReturn(mockServer);
+
+    verify(mockServer, Mockito.times(1)).get(contains("/api/game/{id}"), any());
+    verify(mockServer, Mockito.atLeastOnce()).post(any(), any());
+
+  }
+
  }
+    // assertTrue(mockServer.get("/api/game/{id}", gameController::getGame).contains("/api/game/{id}"));
