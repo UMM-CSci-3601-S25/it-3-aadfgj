@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatCardModule } from '@angular/material/card';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -7,6 +6,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of } from 'rxjs';
 import { signal } from '@angular/core'; // Import signal for mocking Signal<Game>
 import { GameComponent } from './game-page';
+import { Game } from './game-page'
 
 
 describe('GameComponent', () => {
@@ -145,7 +145,7 @@ describe('GameComponent', () => {
       scores: [0, 0, 0],
       responses: ['Response1', 'Response2', 'Response3'],
       pastResponses: [],
-      winnerBecomesJudge: false // Ensure winnerBecomesJudge is false
+      winnerBecomesJudge: false
     };
     component.game = signal(mockGame); // Mock the game object
     component.playerPerm = [1, 2]; // Mock the shuffled player order
@@ -435,6 +435,7 @@ describe('GameComponent', () => {
     }, 0); // Wait for the asynchronous update
   });
 
+<<<<<<< HEAD
   it('should ignore "ping" messages and not refresh the game', () => {
     const refreshSpy = spyOn(component, 'refreshGame');
     const consoleSpy = spyOn(console, 'log');
@@ -470,6 +471,70 @@ describe('GameComponent', () => {
     }, 1100); // Wait for the reconnect timeout
   });
 
+=======
+  describe('determineWinner', () => {
+    it('should return an empty array if there are no players', () => {
+      const mockGame: Game = {
+        players: [], scores: [], responses: [], judge: null,
+        _id: ''
+      };
+      component.game = signal(mockGame);
+      expect(component.determineWinner()).toEqual([]);
+    })
+    it('should return the single winner with their score', () => {
+      const mockGame: Game = {
+        players: ['Alice', 'Bob', 'Charlie'], scores: [10, 25, 15], responses: [], judge: null,
+        _id: ''
+      };
+      component.game = signal(mockGame);
+      expect(component.determineWinner()).toEqual([{ player: 'Bob', score: 25}]);
+    })
+    it('should return multiple winners in case of a tie', () => {
+      const mockGame: Game = {
+        players: ['Alice', 'Bob', 'Charlie', 'David'], scores: [20, 30, 30, 25], responses: [], judge: null,
+        _id: ''
+      };
+      component.game = signal(mockGame);
+      expect(component.determineWinner()).toEqual([
+        { player: 'Bob', score: 30},
+        { player: 'Charlie', score:30}]);
+    });
+    it('should handle different score distribution correctly', () => {
+      let mockGame: Game = {
+        players: ['Alice', 'Bob', 'Charlie'], scores: [5, 5, 5], responses: [], judge: null,
+        _id: ''
+      };
+      component.game = signal(mockGame);
+      expect(component.determineWinner()).toEqual([
+        { player: 'Alice', score: 5},
+        { player: 'Bob', score: 5},
+        { player: 'Charlie', score: 5}
+      ]);
+      mockGame = { players: ['Alice', 'Bob', 'Charlie'], scores: [30, 25, 15], responses: [], judge: null,
+        _id: ''
+      };
+      component.game = signal(mockGame);
+      expect(component.determineWinner()).toEqual([
+        { player: 'Alice', score: 30}]);
+
+    });
+    it('should return multiple winners in case of a tie', () => {
+      const mockGame: Game = {
+        players: [], scores: [20, 30, 30, 25], responses: [], judge: null,
+        _id: ''
+      };
+      component.game = signal(mockGame);
+      expect(component.determineWinner()).toEqual([]);
+    });
+    it('should handle empty scores but players (edge case)', () => {
+      const mockGame: Game = { players: ['Alice', 'Bob'], scores: [], responses:[], judge: null,
+        _id: ''
+      };
+      component.game = signal(mockGame);
+      expect(component.determineWinner()).toEqual([]);
+    })
+  })
+>>>>>>> d29d2069bee6992e4d32b15d2b7ce5d478396a18
 });
 
 

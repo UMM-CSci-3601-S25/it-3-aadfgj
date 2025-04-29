@@ -217,7 +217,7 @@ export class GameComponent {
           //console.log(`Judge updated to player index: ${newJudge}`);
         });
       } else {
-        const newJudge = (this.game()?.judge + 1) % this.game()?.players.length; // Increment judge to the next player
+        const newJudge = (this.game()?.judge + 1) % (this.game()?.players.length || 1); // Increment judge to the next player
         this.httpClient.put<Game>(`/api/game/edit/${gameId}`, { $set: { judge: newJudge } }).subscribe(() => {
           this.game().judge = newJudge; // Update the local game object
           //console.log(`Judge updated to player index: ${newJudge}`);
@@ -247,6 +247,35 @@ export class GameComponent {
     }
     return true;
   }
+    // Function for adding up points and return the winner or winners if there is a tie
+    determineWinner(): { player: string; score: number }[] {
+      const scoresMap: { [key: string]: number} = {};
+      const players = this.game()?.players || [];
+      const scores = this.game()?.scores || [];
+
+      for (let i = 0; i < players.length; i++) {
+        scoresMap[players[i]] = scores[i];
+      }
+
+      const sortedPlayers = Object.entries(scoresMap).sort(([, scoreA], [, scoreB]) => scoreB - scoreA);
+
+      if (sortedPlayers.length === 0) {
+        return [];
+      }
+
+      const highestScore = sortedPlayers[0][1];
+      const winners: { player: string; score: number}[] = []
+
+      for (const [player, score] of sortedPlayers) {
+        if (score === highestScore) {
+          winners.push({player, score});
+
+        } else {
+          break; // the array is sorted therefore no more winners can exist
+        }
+      }
+      return winners;
+    }
 
   rejoinSpot: number | null = null; // Add a property to store the rejoin spot
 

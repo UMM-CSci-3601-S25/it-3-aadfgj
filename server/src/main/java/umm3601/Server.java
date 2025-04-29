@@ -40,7 +40,7 @@ public class Server {
   // for the server. This is used to add routes to the server.
   private Controller[] controllers;
 
-  private static final Set<WsContext> connectedClients = ConcurrentHashMap.newKeySet();
+  private static Set<WsContext> connectedClients = ConcurrentHashMap.newKeySet();
   private static final long PING_INTERVAL_MS = 30000; // 30 seconds
 
   // Update the Game State
