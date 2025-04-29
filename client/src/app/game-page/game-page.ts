@@ -267,7 +267,7 @@ export class GameComponent {
     const winners: { player: string; score: number}[] = []
 
     for (const [player, score] of sortedPlayers) {
-      if (score === highestScore) {
+      if (score === highestScore && score !== undefined) {
         winners.push({player, score});
 
       } else {
