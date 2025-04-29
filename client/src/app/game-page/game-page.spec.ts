@@ -586,7 +586,7 @@ describe('GameComponent', () => {
   });
 
   it('should reconnect WebSocket when connection is closed', (done) => {
-    const reconnectSpy = spyOn(component as any, 'reconnectWebSocket').and.callThrough();
+    const reconnectSpy = spyOn(component, 'reconnectWebSocket').and.callThrough();
     const consoleSpy = spyOn(console, 'warn');
 
     component['socket'].onclose(new CloseEvent('close'));
