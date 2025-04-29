@@ -72,7 +72,7 @@ export class GameComponent {
     ).subscribe((game) => this.game.set(game)); // Update the signal with the fetched game
   }
 
-  private reconnectWebSocket() {
+  reconnectWebSocket() {
     setTimeout(() => {
       this.socket = new WebSocket('ws://localhost:4567/api/game/updates');
       this.socket.onmessage = (event) => {
