@@ -218,7 +218,7 @@ export class GameComponent {
           //console.log(`Judge updated to player index: ${newJudge}`);
         });
       } else {
-        const newJudge = (this.game()?.judge + 1) % this.game()?.players.length; // Increment judge to the next player
+        const newJudge = (this.game()?.judge + 1) % (this.game()?.players.length || 1); // Increment judge to the next player
         this.httpClient.put<Game>(`/api/game/edit/${gameId}`, { $set: { judge: newJudge } }).subscribe(() => {
           this.game().judge = newJudge; // Update the local game object
           //console.log(`Judge updated to player index: ${newJudge}`);
