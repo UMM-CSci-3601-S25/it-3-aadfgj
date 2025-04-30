@@ -12,28 +12,16 @@ describe('Settings page', () => {
     page.navigateTo();
   });
 
-  // it('Should create game', () => {
-  //   page.createGame().click();
-  //   cy.url().should(url => expect(url.includes('')).to.be.true);
-  // });
-
-  // it('Should join game', () => {
-  //   page.joinGame('123456').click();
-  //   cy.url().should(url => expect(url.includes('/game/')).to.be.true);
-  // });
-
+  // test parts of settings page
   it('Should look at the url and check if it\'s correct', () => {
     cy.url().should(url => expect(url.endsWith('/settings/123456789')).to.be.true);
   });
-
-
-  // it('Should read the game code', () => {
-  //   page.readCode().should(text => expect(text.endsWith('123456789')).to.be.true);
-  // });
 
   it('Should start game', () => {
     page.startGame().click();
     cy.url().should(url => expect(url.includes('')).to.be.true);
   });
+  // add test for checking if you can copy the game code
 
+  // should test for if you can add custom number of rounds
 });

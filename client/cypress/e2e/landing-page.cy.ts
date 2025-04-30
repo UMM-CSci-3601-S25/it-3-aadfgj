@@ -12,6 +12,7 @@ describe('Landing page', () => {
     page.navigateTo();
   });
 
+  // test parts of landing page
   it('Should create game', () => {
     page.createGame().click();
     cy.url().should(url => expect(url.includes('')).to.be.true);
