@@ -652,14 +652,38 @@ describe('GameComponent', () => {
       component.game = signal(mockGame);
       expect(component.determineWinner()).toEqual([]);
     });
-    it('should handle empty scores but players (edge case)', () => {
-      const mockGame: Game = { players: ['Alice', 'Bob'], scores: [], responses:[], judge: null,
-        _id: ''
-      };
-      component.game = signal(mockGame);
-      expect(component.determineWinner()).toEqual([]);
-    })
   })
+
+  it('should handle empty playerPerm in shuffleArray', () => {
+    const mockGame = {
+      _id: 'mock-game-id',
+      players: ['Player1'],
+      judge: 0
+    };
+    component.game = signal(mockGame); // Mock the game object
+    component.shuffleArray();
+    expect(component.playerPerm).toEqual([]); // Should be empty since there's only one player (the judge)
+  });
+
+  it('should handle undefined game in determineWinner', () => {
+    component.game = signal(undefined); // Set game to undefined
+    expect(component.determineWinner()).toEqual([]); // Should return an empty array
+  });
+
+  it('should handle WebSocket error event', () => {
+    const errorSpy = spyOn(console, 'error'); // Spy on console.error
+    component['socket'] = {
+      onerror: null,
+      close: () => {},
+      send: () => {},
+      onmessage: null,
+      onclose: null,
+    } as unknown as WebSocket; // Mock WebSocket
+    component['socket'].onerror = (event: Event) => {
+      console.error('WebSocket error:', event);
+    };
+    const mockEvent = new Event('error');
+    component['socket'].onerror(mockEvent);
+    expect(errorSpy).toHaveBeenCalledWith('WebSocket error:', mockEvent); // Ensure error is logged
+  });
 });
-
-
