@@ -279,3 +279,4 @@ export class GameComponent {
   }
 
 }
+export { Game };
