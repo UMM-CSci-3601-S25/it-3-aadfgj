@@ -170,8 +170,6 @@ class GameControllerSpec {
     });
   }
 
-
-
   @Test
   void editGameWithExistentId() throws IOException {
     String id = gameID.toHexString();
@@ -208,14 +206,30 @@ class GameControllerSpec {
 
   @Test
   void testAddRoutes() {
-    Javalin mockServer = mock(Javalin.class);
-    gameController.addRoutes(mockServer);
+    Javalin localMockServer = mock(Javalin.class);
+    gameController.addRoutes(localMockServer);
     when(mockServer.get(any(), any())).thenReturn(mockServer);
     when(mockServer.post(any(), any())).thenReturn(mockServer);
 
-    verify(mockServer, Mockito.times(1)).get(contains("/api/game/{id}"), any());
-    verify(mockServer, Mockito.atLeastOnce()).post(any(), any());
+    verify(localMockServer, Mockito.times(1)).get(contains("/api/game/{id}"), any());
+    verify(localMockServer, Mockito.atLeastOnce()).post(any(), any());
 
+  }
+
+  @Test
+  void testGameWithWinner() {
+    String id = gameID.toHexString();
+    when(ctx.pathParam("id")).thenReturn(id);
+
+    Document updatedGame = new Document("$set", new Document()
+        .append("prompt", "Updated prompt")
+        .append("judge", 2));
+    when(ctx.body()).thenReturn(updatedGame.toJson());
+
+    gameController.editGame(ctx);
+
+    verify(ctx).status(HttpStatus.OK);
+    verify(ctx).body();
   }
 
  }
