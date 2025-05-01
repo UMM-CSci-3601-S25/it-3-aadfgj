@@ -1,17 +1,19 @@
-
 .game-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 100%; 
+    width: 100%;
     margin: auto;
     padding: 100px;
     background-color: #0f0f3c;
     border-radius: 10px;
-   
+
 }
 
+[style="display: flex"] > div {
+    margin: 5px;
+}
 
 #response-button {
     margin-top: 10px;
@@ -19,18 +21,17 @@
     color: #fff;
     font-size: 160px;
     padding: 10px 20px;
-    width: 100%; 
+    width: 100%;
     max-width: 900px;
     border: none;
     border-radius: 50px;
     cursor: pointer;
 }
 
-
 .username-section, .response-section {
     width: 90%;
     text-align: center;
-    margin-bottom: 50px; 
+    margin-bottom: 50px;
 }
 
 #name-input, #response-input {
@@ -39,19 +40,7 @@
     border: 2px solid #e94560;
     border-radius: 5px;
     background-color: #fff;
-    font-size: 16px;#name-button, #response-button {
-        margin-top: 10px;
-        background-color: #e94560;
-        color: #fff;
-        font-size: 16px;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-    
-    
-    
+    font-size: 16px;
     box-sizing: border-box;
 }
 
@@ -64,6 +53,38 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
+}
+
+#rejoin-input {
+    width: 150px;
+    padding: 5px;
+    border: 2px solid #e94560;
+    border-radius: 5px;
+    background-color: #fff;
+    font-size: 12px;
+    box-sizing: border-box;
+}
+
+#rejoin-button {
+    margin-top: 5px;
+    background-color: #e94560;
+    color: #fff;
+    font-size: 12px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+mat-form-field#rejoin-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    z-index: 1; /* Ensure it does not overlap visually */
+    margin-top: 20px; /* Add spacing to avoid overlap with other fields */
 }
 
 

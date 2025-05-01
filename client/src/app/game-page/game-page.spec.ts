@@ -6,7 +6,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of } from 'rxjs';
 import { signal } from '@angular/core'; // Import signal for mocking Signal<Game>
 import { GameComponent } from './game-page';
-import { Game } from './game-page'
+import { Game } from '../game'
 
 
 describe('GameComponent', () => {
@@ -96,7 +96,6 @@ describe('GameComponent', () => {
     component.playerId = 1;
     component.response = 'Test Response';
 
-
     const httpClientSpy = spyOn(component['httpClient'], 'put').and.callThrough();
     const shuffleArraySpy = spyOn(component, 'shuffleArray').and.callFake(() => {
       const array = mockGame.responses; // Access the array directly
@@ -104,9 +103,7 @@ describe('GameComponent', () => {
       expect(array.length).toBeGreaterThan(0); // Ensure array has elements
     });
 
-
     component.submitResponse();
-
 
     expect(component.game().responses[1]).toBe('Test Response');
     expect(component.displayedPrompt).toBe('Test Response'); // Judge's response becomes the prompt
@@ -128,7 +125,6 @@ describe('GameComponent', () => {
     component.game = signal(mockGame); // Mock the game object
     component.shuffleArray();
 
-
     expect(component.playerPerm).toBeDefined();
     expect(component.playerPerm.length).toBe(mockGame.players.length - 1); // Exclude the judge
     expect(component.playerPerm).not.toContain(mockGame.judge); // Ensure judge is excluded
@@ -136,8 +132,52 @@ describe('GameComponent', () => {
     expect(uniqueValues.size).toBe(component.playerPerm.length); // Ensure no duplicates
   });
 
+  // This test was present in the commented out code, but not in the regular code.
+  // I'm not sure if you want to fix it and include it, or if you want to leave it commented out.
+  // You may want to check if it impacts your coverage -- does it handle a unique case? -KK
+  // it('should update scores, pastResponses, and judge correctly in selectResponse', (done) => {
+  //   const mockGame = {
+  //     _id: 'test-game-id',
+  //     players: ['Player1', 'Player2', 'Player3'],
+  //     judge: 0,
+  //     scores: [0, 0, 0],
+  //     responses: ['Response1', 'Response2', 'Response3'],
+  //     pastResponses: [],
+  //     winnerBecomesJudge: true
+  //   };
+  //   component.game = signal(mockGame); // Mock the game object
+  //   component.playerPerm = [1, 2]; // Mock the shuffled player order
 
-  it('should update judge to the next player in selectResponse when winnerBecomesJudge is false', (done) => {
+  //   const httpClientSpy = spyOn(component['httpClient'], 'put').and.callFake((url, body) => {
+  //     if (body.$set.judge !== undefined) {
+  //       // Simulate the judge update call
+  //       component.game().judge = body.$set.judge;
+  //     }
+  //     return of(null); // Simulate an observable response
+  //   });
+
+  //   component.selectResponse(1); // Select the second response (index 1 in playerPerm)
+
+  //   // Check if the score of the selected player is incremented
+  //   expect(component.game().scores[2]).toBe(1);
+
+  //   // Check if pastResponses is updated correctly
+  //   expect(component.game().pastResponses).toEqual(['Response1', 'Response2', 'Response3']);
+
+  //   // Check if responses are cleared
+  //   expect(component.game().responses).toEqual(['', '', '']);
+
+  //   // Wait for the asynchronous judge update
+  //   setTimeout(() => {
+  //     // Check if the judge is updated correctly
+  //     expect(component.game().judge).toBe(1); // The selected response index becomes the new judge
+  //     expect(httpClientSpy).toHaveBeenCalledTimes(2); // One for game state, one for judge update
+  //     done(); // Mark the test as complete
+  //   });
+  // });
+
+
+  it('should update judge to the next player in selectResponse when winnerBecomesJudge is false (opt1)', (done) => {
     const mockGame = {
       _id: 'test-game-id',
       players: ['Player1', 'Player2', 'Player3'],
@@ -145,14 +185,12 @@ describe('GameComponent', () => {
       scores: [0, 0, 0],
       responses: ['Response1', 'Response2', 'Response3'],
       pastResponses: [],
-      winnerBecomesJudge: false
+      winnerBecomesJudge: false // Ensure winnerBecomesJudge is false
     };
     component.game = signal(mockGame); // Mock the game object
     component.playerPerm = [1, 2]; // Mock the shuffled player order
 
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const httpClientSpy = spyOn(component['httpClient'], 'put').and.callFake((url: any, body: { $set: { judge: number; }; }) => {
+    const httpClientSpy = spyOn(component['httpClient'], 'put').and.callFake((url, body: { $set: { judge: number; }; }) => {
       if (body.$set.judge !== undefined) {
       // Simulate the judge update call
         component.game().judge = body.$set.judge;
@@ -160,25 +198,69 @@ describe('GameComponent', () => {
       return of(null); // Simulate an observable response
     });
 
-
     component.selectResponse(0); // Select the first response (index 0 in playerPerm)
-
 
     // Check if the score of the selected player is incremented
     expect(component.game().scores[1]).toBe(1);
 
-
     // Check if pastResponses is updated correctly
     expect(component.game().pastResponses).toEqual(['Response1', 'Response2', 'Response3']);
-
 
     // Check if responses are cleared
     expect(component.game().responses).toEqual(['', '', '']);
 
-
     // Wait for the asynchronous judge update
     setTimeout(() => {
     // Check if the judge is updated to the next player
+      expect(component.game().judge).toBe(1); // Judge should increment to the next player
+      expect(httpClientSpy).toHaveBeenCalledTimes(2); // One for game state, one for judge update
+      expect(httpClientSpy).toHaveBeenCalledWith(
+        `/api/game/edit/test-game-id`,
+        jasmine.objectContaining({
+          $set: jasmine.objectContaining({
+            judge: 1 // The next player becomes the judge
+          })
+        })
+      );
+      done(); // Mark the test as complete
+    });
+  });
+
+  it('should update judge to the next player in selectResponse when winnerBecomesJudge is false (opt2)', (done) => {
+    const mockGame = {
+      _id: 'test-game-id',
+      players: ['Player1', 'Player2', 'Player3'],
+      judge: 0,
+      scores: [0, 0, 0],
+      responses: ['Response1', 'Response2', 'Response3'],
+      pastResponses: [],
+      winnerBecomesJudge: false // Ensure winnerBecomesJudge is false
+    };
+    component.game = signal(mockGame); // Mock the game object
+    component.playerPerm = [1, 2]; // Mock the shuffled player order
+
+    const httpClientSpy = spyOn(component['httpClient'], 'put').and.callFake((url, body) => {
+      if (body.$set.judge !== undefined) {
+        // Simulate the judge update call
+        component.game().judge = body.$set.judge;
+      }
+      return of(null); // Simulate an observable response
+    });
+
+    component.selectResponse(1); // Select the second response (index 1 in playerPerm)
+
+    // Check if the score of the selected player is incremented
+    expect(component.game().scores[2]).toBe(1);
+
+    // Check if pastResponses is updated correctly
+    expect(component.game().pastResponses).toEqual(['Response1', 'Response2', 'Response3']);
+
+    // Check if responses are cleared
+    expect(component.game().responses).toEqual(['', '', '']);
+
+    // Wait for the asynchronous judge update
+    setTimeout(() => {
+      // Check if the judge is updated to the next player
       expect(component.game().judge).toBe(1); // Judge should increment to the next player
       expect(httpClientSpy).toHaveBeenCalledTimes(2); // One for game state, one for judge update
       expect(httpClientSpy).toHaveBeenCalledWith(
@@ -206,8 +288,7 @@ describe('GameComponent', () => {
     component.usernameInput = 'Player1'; // Simulate a username input
 
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const httpClientSpy = spyOn(component['httpClient'], 'put').and.callFake((url: any, body: { $set: { judge: any; }; }) => {
+    const httpClientSpy = spyOn(component['httpClient'], 'put').and.callFake((url, body: { $set: { judge: number; }; }) => {
       if (body.$set.judge !== undefined) {
         mockGame.judge = body.$set.judge; // Simulate judge update
       }
@@ -229,6 +310,39 @@ describe('GameComponent', () => {
     );
   });
 
+  // I can't tell if this is different intentionally or just by chance.
+  // I'm putting it back in in case it's covering a case you wanted covered. -KK
+  it('should set judge to 0 if playerId is 0', () => {
+    const mockGame = {
+      _id: 'test-game-id',
+      players: [],
+      scores: [],
+      responses: [],
+      judge: null
+    };
+    component.game = signal(mockGame); // Mock the game object
+    component.playerId = null; // Ensure playerId is null initially
+    component.usernameInput = 'Player1'; // Simulate a username input
+
+    const httpClientSpy = spyOn(component['httpClient'], 'put').and.callFake((url, body) => {
+      if (body.$set.judge !== undefined) {
+        mockGame.judge = body.$set.judge; // Simulate judge update
+      }
+      return of(null); // Simulate an observable response
+    });
+
+    component.submitUsername(); // Call the method to test
+
+    expect(mockGame.judge).toBe(0); // Ensure judge is set to 0
+    expect(httpClientSpy).toHaveBeenCalledWith(
+      `/api/game/edit/test-game-id`,
+      jasmine.objectContaining({
+        $set: jasmine.objectContaining({
+          judge: 0 // Verify the judge is set to 0 in the HTTP request
+        })
+      })
+    );
+  });
 
   it('should return false if any response is empty in responsesReady', () => {
     const mockGame = {
@@ -239,11 +353,23 @@ describe('GameComponent', () => {
     };
     component.game = signal(mockGame); // Mock the game object
 
+    const result = component.responsesReady(); // Call the method
+
+    expect(result).toBe(false); // Verify it returns false
+  });
+
+  it('should return true if all responses are filled in responsesReady', () => {
+    const mockGame = {
+      _id: 'test-game-id',
+      responses: ['Response1', 'Response2', 'Response3'], // All responses are filled
+      players: ['Player1', 'Player2', 'Player3'],
+      judge: 0
+    };
+    component.game = signal(mockGame); // Mock the game object
 
     const result = component.responsesReady(); // Call the method
 
-
-    expect(result).toBe(false); // Verify it returns false
+    expect(result).toBe(true); // Verify it returns true
   });
 
 
@@ -261,8 +387,7 @@ describe('GameComponent', () => {
     component.playerPerm = [1, 2]; // Mock the shuffled player order
 
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const httpClientSpy = spyOn(component['httpClient'], 'put').and.callFake((url: any, body: { $set: { judge: number; }; }) => {
+    const httpClientSpy = spyOn(component['httpClient'], 'put').and.callFake((url, body: { $set: { judge: number; }; }) => {
       if (body.$set.judge !== undefined) {
         component.game().judge = body.$set.judge; // Simulate judge update
       }
@@ -312,8 +437,7 @@ describe('GameComponent', () => {
     component.submission = 'Test Prompt'; // Set a test submission
 
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const httpClientSpy = spyOn(component['httpClient'], 'put').and.callFake((url: any, body: any) => {
+    const httpClientSpy = spyOn(component['httpClient'], 'put').and.callFake((url, body) => {
       expect(url).toBe(`/api/game/edit/test-game-id`); // Verify the correct URL
       expect(body).toEqual({ $set: { prompt: 'Test Prompt' } }); // Verify the correct payload
       return of(null); // Simulate an observable response
@@ -360,8 +484,7 @@ describe('GameComponent', () => {
 
   it('should reconnect WebSocket on close', (done) => {
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const reconnectSpy = spyOn(component as any, 'reconnectWebSocket').and.callThrough();
+    const reconnectSpy = spyOn(component, 'reconnectWebSocket').and.callThrough();
     component['socket'].onclose(new CloseEvent('close'));
     setTimeout(() => {
       expect(reconnectSpy).toHaveBeenCalled();
@@ -411,8 +534,7 @@ describe('GameComponent', () => {
     component.game = signal(mockGame); // Mock the game object
     component.playerPerm = [0, 1, 2]; // Mock the player order
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const httpClientSpy = spyOn(component['httpClient'], 'put').and.callFake((url: string, body: any) => {
+    const httpClientSpy = spyOn(component['httpClient'], 'put').and.callFake((url: string, body) => {
       expect(url).toBe(`/api/game/edit/test-game-id`); // Verify the correct URL
       expect(body).toEqual({ $set: { winner: 'Player2' } }); // Verify the correct payload
       mockGame.winner = 'Player2'; // Simulate updating the winner
@@ -439,6 +561,41 @@ describe('GameComponent', () => {
       expect(component.game().winner).toBe('Player2'); // Verify the local game object is updated
       done(); // Mark the test as complete
     }, 0); // Wait for the asynchronous update
+  });
+
+  it('should ignore "ping" messages and not refresh the game', () => {
+    const refreshSpy = spyOn(component, 'refreshGame');
+    const consoleSpy = spyOn(console, 'log');
+    const mockEvent = { data: 'ping' } as MessageEvent;
+
+    component['socket'].onmessage(mockEvent);
+
+    expect(refreshSpy).not.toHaveBeenCalled(); // Ensure refreshGame is not called
+    expect(consoleSpy).not.toHaveBeenCalled(); // Ensure no log for "ping"
+  });
+
+  it('should log and refresh the game for non-"ping" messages', () => {
+    const refreshSpy = spyOn(component, 'refreshGame');
+    const consoleSpy = spyOn(console, 'log');
+    const mockEvent = { data: 'update' } as MessageEvent;
+
+    component['socket'].onmessage(mockEvent);
+
+    expect(refreshSpy).toHaveBeenCalled(); // Ensure refreshGame is called
+    expect(consoleSpy).toHaveBeenCalledWith('WebSocket message received:', 'update'); // Ensure log is correct
+  });
+
+  it('should reconnect WebSocket when connection is closed', (done) => {
+    const reconnectSpy = spyOn(component, 'reconnectWebSocket').and.callThrough();
+    const consoleSpy = spyOn(console, 'warn');
+
+    component['socket'].onclose(new CloseEvent('close'));
+
+    setTimeout(() => {
+      expect(consoleSpy).toHaveBeenCalledWith('WebSocket connection closed. Reconnecting...');
+      expect(reconnectSpy).toHaveBeenCalled(); // Ensure reconnect logic is triggered
+      done();
+    }, 1100); // Wait for the reconnect timeout
   });
 
   describe('determineWinner', () => {
@@ -529,4 +686,47 @@ describe('GameComponent', () => {
     component['socket'].onerror(mockEvent);
     expect(errorSpy).toHaveBeenCalledWith('WebSocket error:', mockEvent); // Ensure error is logged
   });
+
+
+
+  // // fails but increases coverage
+  it('should handle player rejoining the game', () => {
+    const mockGame = {
+      _id: 'test-game-id',
+      players: ['Player1', 'Player2'],
+      scores: [0, 0],
+      responses: ['', ''],
+      pastResponses: []
+    };
+
+    // Mock the game signal
+    component.game = signal(mockGame);
+
+    // Set up test conditions
+    component.username = 'Player2'; // Player rejoining
+    component.playerId = 1; // Existing player ID
+
+    // Spy on the HTTP client
+    const httpClientSpy = spyOn(component['httpClient'], 'put').and.returnValue(of(null));
+
+    // Call the method
+    component.rejoinGame();
+
+    // Verify the HTTP call
+    expect(httpClientSpy).toHaveBeenCalledWith(
+      `/api/game/edit/test-game-id`,
+      jasmine.objectContaining({
+        $set: jasmine.objectContaining({
+          // Should maintain existing players
+          players: ['Player1', 'Player2']
+        })
+      })
+    );
+
+    // Verify the component state
+    expect(component.playerId).toBe(1); // Should keep the same player ID
+    expect(component.username).toBe('Player2'); // Username should remain
+  });
+
+
 });

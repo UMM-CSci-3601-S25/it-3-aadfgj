@@ -72,7 +72,7 @@ export class GameComponent {
     ).subscribe((game) => this.game.set(game)); // Update the signal with the fetched game
   }
 
-  private reconnectWebSocket() {
+  reconnectWebSocket() {
     setTimeout(() => {
       this.socket = new WebSocket('ws://localhost:4567/api/game/updates');
       this.socket.onmessage = (event) => {
@@ -126,7 +126,6 @@ export class GameComponent {
   username = " ";
   usernameInput: string = "";
   numPlayers: number = 0;
-  //isPromptSubmitted: boolean = false;
   displayedPrompt: string = '';
   responses: string[] = []; // Initialize responses as an empty array
 
@@ -268,7 +267,7 @@ export class GameComponent {
     const winners: { player: string; score: number}[] = []
 
     for (const [player, score] of sortedPlayers) {
-      if (score === highestScore) {
+      if (score === highestScore && score !== undefined) {
         winners.push({player, score});
 
       } else {
@@ -278,5 +277,15 @@ export class GameComponent {
     return winners;
   }
 
+  rejoinSpot: number | null = null; // Add a property to store the rejoin spot
+
+  rejoinGame() {
+    if (this.rejoinSpot !== null && this.rejoinSpot >= 0 && this.rejoinSpot < this.game()?.players.length) {
+      this.playerId = this.rejoinSpot; // Set the playerId to the rejoin spot
+      this.username = this.game()?.players[this.rejoinSpot]; // Retrieve the username from the game state
+      console.log(`Player rejoined at spot: ${this.rejoinSpot}, Username: ${this.username}`);
+    } else {
+      console.error('Invalid rejoin spot');
+    }
+  }
 }
-export { Game };
