@@ -1,23 +1,26 @@
 <div class="flex-row">
   <div class="flex-1">
     <mat-card class="home-card">
-      <mat-form-field> <!--[style]="playerId == null ? 'display: block' : 'display: none'"-->
+      <mat-form-field [style]="playerId == null ? 'display: block' : 'display: none'">
         Username:
         <input id="name-input" matInput type="text" [(ngModel)]="usernameInput" placeholder="Enter your username">
         <button id="name-button" mat-raised-button color="primary" (click)="submitUsername()">Submit Username</button>
       </mat-form-field>
     </mat-card>
-    <h1 style="margin: 0 5%">{{ this.game()?.responses[this.game()?.judge]}}</h1>
-    <h2 *ngIf="game()?.winner" style="color: red; text-align: center;">
-       {{ game()?.winner }} has won the game!
+    <h1 style="margin: 0 5%; text-align: center; font-size: 2.5em;">{{ this.game()?.responses[this.game()?.judge]}}</h1>
+    <h2 *ngIf="game()?.winner" style="color: red; text-align: center; font-size: 2.5em;">
+       🎊{{ game()?.winner }} has won the game!🎊
     </h2>
-    <ul style="float: right; width: 25%; color: green">
-
+    <ul style="float: right; width: 25%; color: green; font-size: 1.3em;">
       <li *ngFor="let player of this.game()?.players; let i = index">
         {{ this.game()?.scores[i] }} - <span [style.textDecoration]="i === this.game()?.judge ? 'underline' : 'none'">{{ player }}</span> - {{ this.game()?.pastResponses[i] }}
       </li>
     </ul>
-    <ul [style]="responsesReady() ? 'display: flex' : 'display: none'"><li *ngFor="let response of getResponses(); index as i"><button style="font-size: 1em;" (click)="selectResponse(i)"> {{ response }}</button></li></ul>
+    <div [style]="responsesReady() ? 'display: flex; justify-content: center; position: absolute; top: 25%; left: 50%; transform: translate(-50%, -50%);' : 'display: none'">
+      <div *ngFor="let response of getResponses(); index as i">
+        <button style="font-size: 1.3em; padding: 10px 20px;" (click)="selectResponse(i)"> {{ response }}</button>
+      </div>
+    </div>
     <mat-form-field>
       <input id = "response-input" matInput type="text" [(ngModel)]="response">
       <input id = "response-button" type="submit" value="Submit" (click)="submitResponse()">
