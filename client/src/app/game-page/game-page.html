@@ -1,7 +1,7 @@
 <div class="flex-row">
   <div class="flex-1">
     <mat-card class="home-card">
-      <mat-form-field>
+      <mat-form-field [style]="playerId == null ? 'display: block' : 'display: none'">
         Username:
         <input id="name-input" matInput type="text" [(ngModel)]="usernameInput" placeholder="Enter your username">
         <button id="name-button" mat-raised-button color="primary" (click)="submitUsername()">Submit Username</button>

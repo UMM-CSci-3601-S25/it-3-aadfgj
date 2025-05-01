@@ -38,25 +38,32 @@ export class GameComponent {
   error = signal({help: '', httpResponse: '', message: ''});
 
   private socket: WebSocket;
+  private readonly PONG_TIMEOUT = ((1000 * 5) + (1000 * 1)) // 5 + 1 second for buffer
+  private readonly PING_INTERVAL = 5000;
+  private heartbeatInterval: number;
+  private pongTimeout: number;
 
   constructor(
     private route: ActivatedRoute,
     private httpClient: HttpClient
   ) {
-    this.socket = new WebSocket(`${environment.wsUrl}`);
-    this.socket.onmessage = (event) => {
-      if (event.data === 'ping') {
-        // Ignore ping messages
-        return;
-      }
-      console.log('WebSocket message received:', event.data);
-      this.refreshGame(); // Refresh game data on update
-    };
+    // this.socket = new WebSocket('ws://localhost:4567/api/game/updates');
+    // this.socket.onmessage = (event) => {
+    //   if (event.data === 'ping') {
+    //     // Ignore ping messages
+    //     return;
+    //   }
+    //   console.log('WebSocket message received:', event.data);
+    //   this.refreshGame(); // Refresh game data on update
+    // };
 
-    this.socket.onclose = () => {
-      console.warn('WebSocket connection closed. Reconnecting...');
-      this.reconnectWebSocket(); // Reconnect if the WebSocket is closed
-    };
+    // this.socket.onclose = () => {
+    //   console.warn('WebSocket connection closed. Reconnecting...');
+    //   this.reconnectWebSocket(); // Reconnect if the WebSocket is closed
+    // };
+
+
+    this.WebsocketSetup();
 
     // Initialize the game signal with data from the server
     this.route.paramMap.pipe(
@@ -73,22 +80,82 @@ export class GameComponent {
     ).subscribe((game) => this.game.set(game)); // Update the signal with the fetched game
   }
 
-  reconnectWebSocket() {
-    setTimeout(() => {
-      this.socket = new WebSocket(`${environment.wsUrl}`);
-      this.socket.onmessage = (event) => {
-        if (event.data === 'ping') {
-          return;
-        }
-        console.log('WebSocket message received:', event.data);
-        this.refreshGame();
-      };
-      this.socket.onclose = () => {
-        console.warn('WebSocket connection closed. Reconnecting...');
-        this.reconnectWebSocket();
-      };
-    }, 1000); // Attempt to reconnect after 1 second
+  private WebsocketSetup() {
+    this.cleanupWebSocket(); //Making sure that the websocket is re-usable since were using it again.
+    this.socket = new WebSocket('ws://localhost:4567/api/game/updates');
+
+
+    this.socket.onopen = () => {
+      console.log('WebSocket connected');
+      this.Heartbeat();
+    };
+
+
+    this.socket.onmessage = (event) => {
+      if (event.data === 'ping') {
+        console.log('ping received from server')
+        this.socket.send('pong');
+      }
+      const sanitizedData = event.data.replace(/[\n\r]/g, '');
+      console.log('WebSocket message received:', sanitizedData);
+      this.refreshGame();
+    };
+
+
+    this.socket.onclose = () => {
+      console.warn('WebSocket connection closed. Reconnecting...');
+      this.cleanupWebSocket();
+      setTimeout(() => this.WebsocketSetup(), 1000 * 3);
+    };
+    // Attempt to reconnect after 1 second
   }
+
+
+  private Heartbeat() {
+    setInterval(() => {
+      if (this.socket.readyState === WebSocket.OPEN) {
+        this.socket.send('ping');
+        this.resetPongTimeout();
+      }
+    }, this.PING_INTERVAL);
+  }
+
+
+  private resetPongTimeout() {
+    clearTimeout(this.pongTimeout);
+    setTimeout(() => {
+      console.warn('Pong not received. Reconnecting...');
+      this.socket.close(); // This will trigger onclose to reconnect
+    }, this.PONG_TIMEOUT);
+
+
+  }
+
+
+  private cleanupWebSocket() {
+    clearInterval(this.heartbeatInterval);
+    clearTimeout(this.pongTimeout);
+  }
+
+
+
+
+  // private reconnectWebSocket() {
+  //   setTimeout(() => {
+  //     this.socket = new WebSocket('ws://localhost:4567/api/game/updates');
+  //     this.socket.onmessage = (event) => {
+  //       if (event.data === 'ping') {
+  //         return;
+  //       }
+  //       console.log('WebSocket message received:', event.data);
+  //       this.refreshGame();
+  //     };
+  //     this.socket.onclose = () => {
+  //       console.warn('WebSocket connection closed. Reconnecting...');
+  //       this.reconnectWebSocket();
+  //     };
+  //   }, 1000); // Attempt to reconnect after 1 second
+  // }
 
   refreshGame() {
     const gameId = this.game()?.['_id'];
@@ -99,14 +166,14 @@ export class GameComponent {
     }
   }
 
-  submitPrompt() {
-    const gameId = this.game()?._id;
-    this.httpClient.put<Game>(`/api/game/edit/${gameId}`, {$set:{prompt: this.submission}}).subscribe();
-    //console.log(this.submission);
-    //this.isPromptSubmitted = true; // Mark the prompt as submitted
-    this.displayedPrompt = this.submission; // Store the submitted prompt
-    this.submission = ''; // Clear the input field
-  }
+  // submitPrompt() {
+  //   const gameId = this.game()?._id;
+  //   this.httpClient.put<Game>(`/api/game/edit/${gameId}`, {$set:{prompt: this.submission}}).subscribe();
+  //   //console.log(this.submission);
+  //   //this.isPromptSubmitted = true; // Mark the prompt as submitted
+  //   this.displayedPrompt = this.submission; // Store the submitted prompt
+  //   this.submission = ''; // Clear the input field
+  // }
 
   submitResponse() {
     const gameId = this.game()?._id;
