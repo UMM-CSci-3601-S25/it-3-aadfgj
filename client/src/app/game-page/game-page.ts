@@ -121,7 +121,7 @@ export class GameComponent {
   }
 
 
-  private resetPongTimeout() {
+  public resetPongTimeout() {
     clearTimeout(this.pongTimeout);
     setTimeout(() => {
       console.warn('Pong not received. Reconnecting...');
@@ -166,14 +166,6 @@ export class GameComponent {
     }
   }
 
-  // submitPrompt() {
-  //   const gameId = this.game()?._id;
-  //   this.httpClient.put<Game>(`/api/game/edit/${gameId}`, {$set:{prompt: this.submission}}).subscribe();
-  //   //console.log(this.submission);
-  //   //this.isPromptSubmitted = true; // Mark the prompt as submitted
-  //   this.displayedPrompt = this.submission; // Store the submitted prompt
-  //   this.submission = ''; // Clear the input field
-  // }
 
   submitResponse() {
     const gameId = this.game()?._id;
@@ -347,6 +339,9 @@ export class GameComponent {
   }
 
   rejoinSpot: number | null = null; // Add a property to store the rejoin spot
+
+
+  // George- this was supposed to be a rejoin function but it doesnt work as far as i can test
 
   // rejoinGame() {
   //   if (this.rejoinSpot !== null && this.rejoinSpot >= 0 && this.rejoinSpot < this.game()?.players.length) {
