@@ -121,7 +121,7 @@ export class GameComponent {
   }
 
 
-  private resetPongTimeout() {
+  public resetPongTimeout() {
     clearTimeout(this.pongTimeout);
     setTimeout(() => {
       console.warn('Pong not received. Reconnecting...');
@@ -166,14 +166,6 @@ export class GameComponent {
     }
   }
 
-  // submitPrompt() {
-  //   const gameId = this.game()?._id;
-  //   this.httpClient.put<Game>(`/api/game/edit/${gameId}`, {$set:{prompt: this.submission}}).subscribe();
-  //   //console.log(this.submission);
-  //   //this.isPromptSubmitted = true; // Mark the prompt as submitted
-  //   this.displayedPrompt = this.submission; // Store the submitted prompt
-  //   this.submission = ''; // Clear the input field
-  // }
 
   submitResponse() {
     const gameId = this.game()?._id;
@@ -348,13 +340,16 @@ export class GameComponent {
 
   rejoinSpot: number | null = null; // Add a property to store the rejoin spot
 
-  rejoinGame() {
-    if (this.rejoinSpot !== null && this.rejoinSpot >= 0 && this.rejoinSpot < this.game()?.players.length) {
-      this.playerId = this.rejoinSpot; // Set the playerId to the rejoin spot
-      this.username = this.game()?.players[this.rejoinSpot]; // Retrieve the username from the game state
-      console.log(`Player rejoined at spot: ${this.rejoinSpot}, Username: ${this.username}`);
-    } else {
-      console.error('Invalid rejoin spot');
-    }
-  }
+
+  // George- this was supposed to be a rejoin function but it doesnt work as far as i can test
+
+  // rejoinGame() {
+  //   if (this.rejoinSpot !== null && this.rejoinSpot >= 0 && this.rejoinSpot < this.game()?.players.length) {
+  //     this.playerId = this.rejoinSpot; // Set the playerId to the rejoin spot
+  //     this.username = this.game()?.players[this.rejoinSpot]; // Retrieve the username from the game state
+  //     console.log(`Player rejoined at spot: ${this.rejoinSpot}, Username: ${this.username}`);
+  //   } else {
+  //     console.error('Invalid rejoin spot');
+  //   }
+  // }
 }
