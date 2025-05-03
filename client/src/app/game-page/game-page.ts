@@ -348,13 +348,13 @@ export class GameComponent {
 
   rejoinSpot: number | null = null; // Add a property to store the rejoin spot
 
-  rejoinGame() {
-    if (this.rejoinSpot !== null && this.rejoinSpot >= 0 && this.rejoinSpot < this.game()?.players.length) {
-      this.playerId = this.rejoinSpot; // Set the playerId to the rejoin spot
-      this.username = this.game()?.players[this.rejoinSpot]; // Retrieve the username from the game state
-      console.log(`Player rejoined at spot: ${this.rejoinSpot}, Username: ${this.username}`);
-    } else {
-      console.error('Invalid rejoin spot');
-    }
-  }
+  // rejoinGame() {
+  //   if (this.rejoinSpot !== null && this.rejoinSpot >= 0 && this.rejoinSpot < this.game()?.players.length) {
+  //     this.playerId = this.rejoinSpot; // Set the playerId to the rejoin spot
+  //     this.username = this.game()?.players[this.rejoinSpot]; // Retrieve the username from the game state
+  //     console.log(`Player rejoined at spot: ${this.rejoinSpot}, Username: ${this.username}`);
+  //   } else {
+  //     console.error('Invalid rejoin spot');
+  //   }
+  // }
 }

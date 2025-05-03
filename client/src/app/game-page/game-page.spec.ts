@@ -689,44 +689,4 @@ describe('GameComponent', () => {
 
 
 
-  // // fails but increases coverage
-  it('should handle player rejoining the game', () => {
-    const mockGame = {
-      _id: 'test-game-id',
-      players: ['Player1', 'Player2'],
-      scores: [0, 0],
-      responses: ['', ''],
-      pastResponses: []
-    };
-
-    // Mock the game signal
-    component.game = signal(mockGame);
-
-    // Set up test conditions
-    component.username = 'Player2'; // Player rejoining
-    component.playerId = 1; // Existing player ID
-
-    // Spy on the HTTP client
-    const httpClientSpy = spyOn(component['httpClient'], 'put').and.returnValue(of(null));
-
-    // Call the method
-    component.rejoinGame();
-
-    // Verify the HTTP call
-    expect(httpClientSpy).toHaveBeenCalledWith(
-      `/api/game/edit/test-game-id`,
-      jasmine.objectContaining({
-        $set: jasmine.objectContaining({
-          // Should maintain existing players
-          players: ['Player1', 'Player2']
-        })
-      })
-    );
-
-    // Verify the component state
-    expect(component.playerId).toBe(1); // Should keep the same player ID
-    expect(component.username).toBe('Player2'); // Username should remain
-  });
-
-
 });
