@@ -249,7 +249,7 @@ public class Server {
     });
   }
 
-  private void startHeartbeat() {
+  public void startHeartbeat() {
     Timer timer = new Timer(true); // Daemon thread
     timer.scheduleAtFixedRate(new TimerTask() {
       @Override

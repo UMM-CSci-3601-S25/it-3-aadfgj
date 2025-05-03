@@ -1,10 +1,13 @@
 package umm3601.mongotest.game;
-// import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 // import static org.junit.jupiter.api.Assertions.assertNotNull;
+// import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 // import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.contains;
+// import static org.mockito.ArgumentMatchers.eq;
+// import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 // import static org.mockito.Mockito.mock;
 // import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -37,6 +40,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+// import com.mongodb.client.result.UpdateResult;
 
 import io.javalin.Javalin;
 import io.javalin.http.BadRequestResponse;
@@ -102,9 +106,7 @@ class GameControllerSpec {
     MongoCollection<Document> gameDocuments = db.getCollection("games");
     gameDocuments.drop();
 
-
     gameID = new ObjectId();
-
 
     BsonArray usernames = new BsonArray();
     usernames.add(new BsonString("Kristin"));
@@ -117,7 +119,6 @@ class GameControllerSpec {
 
     Document newGame = new Document()
       .append("players", usernames)
-      .append("prompt", "What is the meaning of life?")
       .append("responses", responses)
       .append("judge", 1)
       .append("discardLast", true)
@@ -130,23 +131,20 @@ class GameControllerSpec {
     gameDocuments.insertOne(newGame);
 
     gameController = new GameController(db);
-
   }
 
+    @Test
+    void getGameWithExistentId() throws IOException {
 
+    String id = gameID.toHexString();
+    when(ctx.pathParam("id")).thenReturn(id);
 
-  // @Test
-  // void getGameWithExistentId() throws IOException {
+    gameController.getGame(ctx);
 
-  //   String id = gameID.toHexString();
-  //   when(ctx.pathParam("id")).thenReturn(id);
-
-  //   gameController.getGame(ctx);
-
-  //   verify(ctx).json(gameCaptor.capture());
-  //   verify(ctx).status(HttpStatus.OK);
-  //   assertEquals(gameID.toHexString(), gameCaptor.getValue()._id);
-  // }
+    verify(ctx).json(gameCaptor.capture());
+    verify(ctx).status(HttpStatus.OK);
+    assertEquals(gameID.toHexString(), gameCaptor.getValue()._id);
+  }
 
 
   @Test
@@ -169,6 +167,17 @@ class GameControllerSpec {
       gameController.getGame(ctx);
     });
   }
+
+  @Test
+  void getGameWithEmptyId() throws IOException {
+
+    when(ctx.pathParam("id")).thenReturn("");
+
+    assertThrows(BadRequestResponse.class, () -> {
+      gameController.getGame(ctx);
+    });
+  }
+
 
   @Test
   void editGameWithExistentId() throws IOException {
@@ -232,5 +241,39 @@ class GameControllerSpec {
     verify(ctx).body();
   }
 
- }
-    // assertTrue(mockServer.get("/api/game/{id}", gameController::getGame).contains("/api/game/{id}"));
+
+      // Check if the winner field is updated
+  @Test
+  void testGameWithWinnerBecomesJudge() {
+    String id = gameID.toHexString();
+    when(ctx.pathParam("id")).thenReturn(id);
+
+    Document updatedGame = new Document("$set", new Document()
+        .append("prompt", "Updated prompt")
+        .append("judge", 2));
+    when(ctx.body()).thenReturn(updatedGame.toJson());
+
+    gameController.editGame(ctx);
+
+    verify(ctx).status(HttpStatus.OK);
+    verify(ctx).body();
+  }
+
+  @Test
+  void editGameNotification() throws IOException {
+    String id = gameID.toHexString();
+    when(ctx.pathParam("id")).thenReturn(id);
+
+    Document updatedGame = new Document("$set", new Document()
+        .append("prompt", "Updated prompt")
+        .append("judge", 2));
+    when(ctx.body()).thenReturn(updatedGame.toJson());
+
+    gameController.editGame(ctx);
+
+    verify(ctx).status(HttpStatus.OK);
+    verify(ctx).body();
+  }
+
+
+}

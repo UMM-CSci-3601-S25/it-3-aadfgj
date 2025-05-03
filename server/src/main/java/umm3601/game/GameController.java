@@ -75,13 +75,14 @@ public class GameController implements Controller {
 
     gameCollection.updateById(new ObjectId(id), newGameDoc);
 
+    // George- doesnt seem useful so i commented it out, i checked if the game still works and it does
     // Check if the winner field is updated
-    if (newGameDoc.containsKey("winner")) {
-      String winner = newGameDoc.getString("winner");
-      Server.broadcastUpdate("{\"winner\": \"" + winner + "\"}"); // Notify WebSocket clients about the winner
-    } else {
+    // if (newGameDoc.containsKey("winner")) {
+    //   String winner = newGameDoc.getString("winner");
+    //   Server.broadcastUpdate("{\"winner\": \"" + winner + "\"}"); // Notify WebSocket clients about the winner
+    // } else {
       Server.broadcastUpdate("Game updated: " + id); // Notify WebSocket clients about other updates
-    }
+    // }
 
     ctx.status(HttpStatus.OK);
   }
