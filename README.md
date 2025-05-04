@@ -98,9 +98,10 @@ You can go ahead and remove this section of the README once you have changed the
 
 
 
-# Generic Apples Game  omit in toc
+# Generic Apples Game 
 
-- [Generic Apples Game  omit in toc](#generic-apples-game--omit-in-toc)
+
+- [Generic Apples Game](#generic-apples-game)
   - [Getting Started](#getting-started)
   - [What is Generic Apples Game?](#what-is-generic-apples-game)
     - [How to Play?](#how-to-play)
@@ -149,7 +150,7 @@ What sets Generic Apples apart are its adaptable features and user-friendly desi
 
 ## Documentation 
 
--(DEVELOPMENT.md)
+-[DEVLEOPMENT.md](DEVELOPMENT.md)
 
 
 
@@ -161,11 +162,19 @@ GENERIC APPLES GAME was designed by students from Software design and developmen
 ## Build with 
 
 
-[Angular](https://angular.dev/)
-TypeScript 
-HTML
-JAVA 
-Java Script 
-SCSS (styling)
+- [Angular](https://angular.dev/)
+- [Angular Unit Testing](https://angular.dev/guide/testing)
+- [TypeScript](https://www.typescriptlang.org/)
+- [HTML](https://html.com/)
+- [JAVA](https://www.java.com/en/)
+- [Java Script](https://www.javascript.com/)
+- [SCSS (styling)](https://sass-lang.com/)
+
+
+- Other tools
+- [Javalin](https://javalin.io/documentation)
+- [MOngoDB (database)](https://www.mongodb.com/docs/manual/)
+- [JSON (generating seed data for testing)](https://next.json-generator.com/)
+- [Cypress (end-to-end-testing)](https://docs.cypress.io/app/get-started/why-cypress)
 
 
