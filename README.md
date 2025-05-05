@@ -89,7 +89,7 @@ You can go ahead and remove this section of the README once you have changed the
     <td align="center"><a href="https://github.com/kklamberty"><img src="https://avatars.githubusercontent.com/u/2751987?v=4?s=100" width="100px;" alt=""/><br /><sub><b>K.K. Lamberty</b></sub></a><br /><a href="https://github.com/UMM-CSci-3601/3601-iteration-template/commits?author=kklamberty" title="Code">💻</a> <a href="#content-kklamberty" title="Content">🖋</a> <a href="#design-kklamberty" title="Design">🎨</a> <a href="https://github.com/UMM-CSci-3601/3601-iteration-template/commits?author=kklamberty" title="Documentation">📖</a> <a href="#ideas-kklamberty" title="Ideas, Planning, & Feedback">🤔</a> <a href="#mentoring-kklamberty" title="Mentoring">🧑‍🏫</a> <a href="#projectManagement-kklamberty" title="Project Management">📆</a> <a href="#question-kklamberty" title="Answering Questions">💬</a> <a href="https://github.com/UMM-CSci-3601/3601-iteration-template/commits?author=kklamberty" title="Tests">⚠️</a> <a href="#tutorial-kklamberty" title="Tutorials">✅</a> <a href="#a11y-kklamberty" title="Accessibility">️️️️♿️</a></td>
     <td align="center"><a href="http://www.morris.umn.edu/~mcphee"><img src="https://avatars.githubusercontent.com/u/302297?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Nic McPhee</b></sub></a><br /><a href="#infra-NicMcPhee" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/UMM-CSci-3601/3601-iteration-template/commits?author=NicMcPhee" title="Tests">⚠️</a> <a href="https://github.com/UMM-CSci-3601/3601-iteration-template/issues?q=author%3ANicMcPhee" title="Bug reports">🐛</a> <a href="#content-NicMcPhee" title="Content">🖋</a> <a href="https://github.com/UMM-CSci-3601/3601-iteration-template/commits?author=NicMcPhee" title="Documentation">📖</a> <a href="#design-NicMcPhee" title="Design">🎨</a> <a href="#maintenance-NicMcPhee" title="Maintenance">🚧</a> <a href="#projectManagement-NicMcPhee" title="Project Management">📆</a> <a href="#question-NicMcPhee" title="Answering Questions">💬</a> <a href="https://github.com/UMM-CSci-3601/3601-iteration-template/pulls?q=is%3Apr+reviewed-by%3ANicMcPhee" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/UMM-CSci-3601/3601-iteration-template/commits?author=NicMcPhee" title="Code">💻</a></td>
   </tr> -->
-<!-- </table> --> -->
+<!-- </table> -->
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
@@ -156,7 +156,7 @@ What sets Generic Apples apart are its adaptable features and user-friendly desi
 
 ## Contributors 
 
-GENERIC APPLES GAME was designed by students from Software design and development (spring 2025) at University of Minnesota Morris. You can see the contributors to this project can be seen [here].
+GENERIC APPLES GAME was designed by students from Software design and development (spring 2025) at University of Minnesota Morris. You can see the contributors to this project can be seen [here->] [Contributors](https://github.com/UMM-CSci-3601-S25/it-3-aadfgj/pulse).
 
 
 ## Build with 
@@ -173,7 +173,7 @@ GENERIC APPLES GAME was designed by students from Software design and developmen
 
 - Other tools
 - [Javalin](https://javalin.io/documentation)
-- [MOngoDB (database)](https://www.mongodb.com/docs/manual/)
+- [MongoDB (database)](https://www.mongodb.com/docs/manual/)
 - [JSON (generating seed data for testing)](https://next.json-generator.com/)
 - [Cypress (end-to-end-testing)](https://docs.cypress.io/app/get-started/why-cypress)
 
