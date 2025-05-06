@@ -96,10 +96,7 @@ You can go ahead and remove this section of the README once you have changed the
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-
-
-# Generic Apples Game 
-
+# Generic Apples Game
 
 - [Generic Apples Game](#generic-apples-game)
   - [Getting Started](#getting-started)
@@ -109,8 +106,11 @@ You can go ahead and remove this section of the README once you have changed the
   - [Documentation](#documentation)
   - [Contributors](#contributors)
   - [Build with](#build-with)
-
-
+    - [Other tools](#other-tools)
+  - [Known Issues and Future Improvements](#known-issues-and-future-improvements)
+    - [Known Issues](#known-issues)
+    - [Future Improvements](#future-improvements)
+  - [Deployment Process](#deployment-process)
 
 ## Getting Started
 
@@ -118,49 +118,47 @@ Play Generic Apples game here (https://134.122.12.152.nip.io/)
 
 ## What is Generic Apples Game?
 
-GENERIC APPLES GAME is a multiplayer party game inspired by popular card games like "Cards Against Humanity" and "Apples to Apples". Players take turns being the judge while others submit responses to prompts provided by judge, creating an engaging and entertaining social experience. 
+GENERIC APPLES GAME is a multiplayer party game inspired by popular card games like "Cards Against Humanity" and "Apples to Apples". Players take turns being the judge while others submit responses to prompts provided by judge, creating an engaging and entertaining social experience.
 
 The game revolves around a simple but engaging others: each round, one player (the Judge) presents a prompt or question, while other players submit their most creative or humorous responses. The Judge then selects their favorite response, and points are awarded accordingly.
+
+![Generic Apples game page](HomePage.png)
 
 ### How to Play?
 
 - Starting a Game:
-- Create a new game
-- Share the game code with friends with copy button
-- Use game settings to adjust points and whio becomes the judge
-- Start when ready
+  - Create a new game
+  - Share the game code with friends with copy button
+  - Use game settings to adjust points and whio becomes the judge
+  - Start when ready
 
 - During the Game:
-- Judge types and shares the prompt
-- Players submit responses
-- Judge selects winning response
-- Points are awarded
-- Winner is displayed when certain points are reached 
-- Next round begins
+  - Judge types and shares the prompt
+  - Players submit responses
+  - Judge selects winning response
+  - Points are awarded
+  - Winner is displayed when certain points are reached 
+  - Next round begins
 
+![Settings Page](GamePage.png)
 
 In each round, there's a Judge who evaluates responses, active Players who submit creative answers, and ultimately a Winner who first reaches the designated score. The game follows a straightforward yet engaging flow: it begins with one player being assigned as Judge, who presents a prompt to the group. Other players then submit their responses, trying to come up with a funny answer. The Judge reviews all submissions and selects their favorite, with points being awarded to the winning response. The Judge position then shifts according to the chosen game settings—either following a fixed rotation or passing to the round's winner.
 
-The scoring system keeps players engaged throughout the game. Points are awarded each round to the player with the winning response. 
+The scoring system keeps players engaged throughout the game. Points are awarded each round to the player with the winning response.
 
 ## Features
 
-What sets Generic Apples apart are its adaptable features and user-friendly design. The game offers customizable settings that let players tailor their experience, including options for how the Judge role rotates and the ability to set different winning score thresholds. The number of players can also be adjusted to accommodate various group sizes. Thanks to WebSocket technology, all game actions—from submitting responses to updating scores—happen in real-time, ensuring a smooth and responsive experience for everyone involved. Some of the unique features are Customizable settings, Real time interaction, for card-playing freinds who can't be in person and want to enjoy having access to play card games in any location. 
+What sets Generic Apples apart are its adaptable features and user-friendly design. The game offers customizable settings that let players tailor their experience, including options for how the Judge role rotates and the ability to set different winning score thresholds. The number of players can also be adjusted to accommodate various group sizes. Thanks to WebSocket technology, all game actions—from submitting responses to updating scores—happen in real-time, ensuring a smooth and responsive experience for everyone involved. Some of the unique features are Customizable settings, Real time interaction, for card-playing freinds who can't be in person and want to enjoy having access to play card games in any location.
 
-
-## Documentation 
+## Documentation
 
 -[DEVLEOPMENT.md](DEVELOPMENT.md)
 
+## Contributors
 
+GENERIC APPLES GAME was designed by students from Software design and development (spring 2025) at University of Minnesota Morris. You can see the contributors to this project can be seen [here](https://github.com/UMM-CSci-3601-S25/it-3-aadfgj/pulse).
 
-## Contributors 
-
-GENERIC APPLES GAME was designed by students from Software design and development (spring 2025) at University of Minnesota Morris. You can see the contributors to this project can be seen [here->] [Contributors](https://github.com/UMM-CSci-3601-S25/it-3-aadfgj/pulse).
-
-
-## Build with 
-
+## Build with
 
 - [Angular](https://angular.dev/)
 - [Angular Unit Testing](https://angular.dev/guide/testing)
@@ -170,11 +168,36 @@ GENERIC APPLES GAME was designed by students from Software design and developmen
 - [Java Script](https://www.javascript.com/)
 - [SCSS (styling)](https://sass-lang.com/)
 
+### Other tools
 
-- Other tools
 - [Javalin](https://javalin.io/documentation)
 - [MongoDB (database)](https://www.mongodb.com/docs/manual/)
 - [JSON (generating seed data for testing)](https://next.json-generator.com/)
 - [Cypress (end-to-end-testing)](https://docs.cypress.io/app/get-started/why-cypress)
 
+## Known Issues and Future Improvements
+
+### Known Issues
+
+- Websocket issues include intermittent connection drops when players remain inactive for >30 minutes,
+  making the game updates anytime judge or players send response on everybody's game page. Multiple game instances occasionally share WebSocket connections. Connection state sometimes becomes inconsistent when players refresh browser during active game.
+
+### Future Improvements
+
+- Implement websocket to maintain connection stability.
+- Add connection recovery when browser refresh scenarios happen.
+- Add more diverse game modes.
+
+
+## Deployment Process
+
+The first step is to sign up for a Digital Ocean account using a github student acount. Student acounts qualify for the "GitHub Student Developer Pack", which provides $100 in credits to host a website.
+
+Once the account is set up, the next step is to create a "Droplet". The authentication is set up using password (which needs to be secure and safely stored), and the default data center region will suffice for most applications. The IP address of the newly created droplet can be accessed on the Digital Ocean dashboard after it is created, with SSH access for further configuration.
+
+updates to the systems are optional,but installation of "docker-compose" is required for deployment. The repository for the project is cloned and a setup script runs to install key elements. Following setup, the application is launched using "docker-compose up -d," which runs containers in the background.
+
+The initial build process will be time-consuming due to dependencies, but subsequent runs of the application will be accessible via the provided "nip.io" domain URL. Logs can be seen using "docker-compose logs", and containers can be stopped or restarted as necessary. This deployment process ensures a secure, scalable, and manageable host environment on Digital Ocean.
+
+for additional details, see the [DEPLOYMENT.md](DEPLOYMENT.md) file.
 
