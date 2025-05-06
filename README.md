@@ -154,6 +154,8 @@ What sets Generic Apples apart are its adaptable features and user-friendly desi
 
 -[DEVLEOPMENT.md](DEVELOPMENT.md)
 
+-[Brochure](Promotional_pamphlet.png)
+
 ## Contributors
 
 GENERIC APPLES GAME was designed by students from Software design and development (spring 2025) at University of Minnesota Morris. You can see the contributors to this project can be seen [here](https://github.com/UMM-CSci-3601-S25/it-3-aadfgj/pulse).
